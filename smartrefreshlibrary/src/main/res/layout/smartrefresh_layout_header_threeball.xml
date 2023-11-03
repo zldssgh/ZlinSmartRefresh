@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:paddingTop="20dp"
+    tools:paddingBottom="20dp"
+    tools:background="#eee"
+    tools:parentTag="android.widget.RelativeLayout"
+    >
+
+
+    <LinearLayout
+        android:id="@+id/srl_classics_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        >
+        <ImageView
+            android:id="@+id/srl_classics_progress"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@android:string/untitled"
+            tools:tint="#6C6868"
+            tools:src="@android:drawable/stat_notify_sync"
+            />
+
+        <TextView
+            android:id="@+id/srl_classics_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="#666666"
+            android:textSize="15sp"
+            android:text="下拉刷新"
+            />
+    </LinearLayout>
+
+</merge>
