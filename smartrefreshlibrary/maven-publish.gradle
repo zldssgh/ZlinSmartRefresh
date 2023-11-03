@@ -1,6 +1,5 @@
 plugins {
     id 'maven-publish'//用来推送aar到jitpack
-    id 'pl.allegro.tech.build.axion-release' version '1.13.6'//用来发行aar版本的插件
 }
 
 afterEvaluate {
@@ -23,14 +22,12 @@ afterEvaluate {
 //            }
 
             //jitpack推送授权
-            repositories {
-                maven {
-                    name('jitpack')
-                    url "https://jitpack.io"
-                    credentials {
-                        username "792678441@qq.com"
-                        password "xiangyu,[51git]."
-                    }
+            maven {
+                name('jitpack')
+                url "https://jitpack.io"
+                credentials {
+                    username "792678441@qq.com"
+                    password "xiangyu,[51git]."
                 }
             }
         }
@@ -51,13 +48,6 @@ afterEvaluate {
     }
 }
 
-//release插件，https授权
-scmVersion{
-    repository{
-        customUsername = "792678441@qq.com"
-        customPassword = "xiangyu,[51git]."
-    }
-}
 
 //添加仓库
 //uploadArchives{
