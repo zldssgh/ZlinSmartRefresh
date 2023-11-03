@@ -1,0 +1,71 @@
+plugins {
+    id 'maven-publish'//用来推送aar到jitpack
+    id 'pl.allegro.tech.build.axion-release' version '1.13.6'//用来发行aar版本的插件
+}
+
+afterEvaluate {
+    publishing {
+        repositories {
+            // 本地仓库
+//            maven {
+//                name('textselectplus')
+//                url uri("../repository")
+//            }
+            // 远程仓库
+//            maven {
+//                allowInsecureProtocol(true)
+//                name('modulelive')
+//                url = url//私有maven库地址
+//                credentials {
+//                    username// 账号
+//                    password// 密码
+//                }
+//            }
+
+            //jitpack推送授权
+            repositories {
+                maven {
+                    name('jitpack')
+                    url "https://jitpack.io"
+                    credentials {
+                        username "792678441@qq.com"
+                        password "xiangyu,[51git]."
+                    }
+                }
+            }
+        }
+        publications {
+            debugType(MavenPublication) {
+                from components.debug
+                groupId = "com.zlin.smartrefresh"// 唯一标识（通常为模块包名，也可以任意）
+                artifactId = "smartrefresh-v1" // 项目名称（通常为类库模块名称，也可以任意）
+                version = "1.0.0" // 版本号
+            }
+            releaseType(MavenPublication) {
+                from components.release
+                groupId = "com.zlin.smartrefresh"// 唯一标识（通常为模块包名，也可以任意）
+                artifactId = "smartrefresh-v1" // 项目名称（通常为类库模块名称，也可以任意）
+                version = "1.0.0" // 版本号
+            }
+        }
+    }
+}
+
+//release插件，https授权
+scmVersion{
+    repository{
+        customUsername = "792678441@qq.com"
+        customPassword = "xiangyu,[51git]."
+    }
+}
+
+//添加仓库
+//uploadArchives{
+//    repositories.mavenpublishDeployer{
+//        // 配置本地仓库路径，项目根目录下的repository目录中
+//        repository(url: uri('../repository'))
+//        pom.groupId = "com.zlin.cardiogram"// 唯一标识（通常为模块包名，也可以任意）
+//        pom.artifactId = "cardiogram-v1" // 项目名称（通常为类库模块名称，也可以任意）
+//        pom.version = "1.0.0" // 版本号
+//    }
+//}
