@@ -4,7 +4,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.15.1'//用来发行aar版本的插件
 }
 
-//apply from: './maven-publish.gradle'
+apply from: './maven-publish.gradle'
 
 //release插件，https授权
 scmVersion{
@@ -19,7 +19,6 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.zlin.smartrefresh"
         minSdk 21
         targetSdk 33
         versionCode 1

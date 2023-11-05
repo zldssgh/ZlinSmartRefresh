@@ -1,6 +1,4 @@
-plugins {
-    id 'maven-publish'//用来推送aar到jitpack
-}
+apply plugin: 'maven-publish'
 
 afterEvaluate {
     publishing {
