@@ -6,14 +6,6 @@ plugins {
 
 apply from: './maven-publish.gradle'
 
-//release插件，https授权
-scmVersion{
-    repository{
-        customUsername = "792678441@qq.com"
-        customPassword = "xiangyu,[51git]."
-    }
-}
-
 android {
     namespace 'com.zlin.smartrefresh'
     compileSdk 33
