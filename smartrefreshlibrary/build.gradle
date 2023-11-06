@@ -16,8 +16,8 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = "com.zlin.smartrefresh"// 唯一标识（通常为模块包名，也可以任意）
-                artifactId = "smartrefresh-v1" // 项目名称（通常为类库模块名称，也可以任意）
+                groupId = "com.gitee.my-library-zlin"// 唯一标识（通常为模块包名，也可以任意）
+                artifactId = "zlin-smart-refresh" // 项目名称（通常为类库模块名称，也可以任意）
                 version = "1.1.0" // 版本号
             }
         }
