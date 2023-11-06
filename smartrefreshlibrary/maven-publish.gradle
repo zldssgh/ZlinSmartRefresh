@@ -1,41 +1,4 @@
-apply plugin: 'maven-publish'
 
-def properties=new Properties()
-properties.load(rootProject.file("local.properties").newInputStream())
-def gitUser=properties.getProperty("gitUser")
-def gitPassWord=properties.getProperty("gitPassWord")
-println("gitUser="+gitUser+" gitPassWord="+gitPassWord)
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId = "com.zlin.smartrefresh"// 唯一标识（通常为模块包名，也可以任意）
-                artifactId = "smartrefresh-v1" // 项目名称（通常为类库模块名称，也可以任意）
-                version = "1.0.2" // 版本号
-            }
-        }
 
-        //jitpack推送授权
-        repositories {
-            maven {
-                name('jitpack')
-                url "https://jitpack.io"
-                credentials {
-                    username gitUser
-                    password gitPassWord
-                }
-            }
-        }
-    }
-}
-
-//release插件，https授权
-scmVersion{
-    repository{
-        customUsername = gitUser
-        customPassword = gitPassWord
-    }
-}
 
