@@ -22,8 +22,10 @@
             <com.zlin.smartrefresh.api.header.ThreeBallHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tballDrawableProgressWidth="20dp"
-                app:tballDrawableProgressHeight="20dp"
+                app:tballAccentColor="#900089"
+                app:tballBallRadius="15dp"
+                app:tballBallHgap="20dp"
+                app:tballBallVgap="25dp"
                 app:tballTitleMarginTop="3dp"
                 app:tballTitleShowEnable="true"
                 app:tballTitleTextSize="19sp"

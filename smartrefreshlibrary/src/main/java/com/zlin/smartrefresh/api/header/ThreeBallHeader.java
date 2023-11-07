@@ -4,6 +4,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Animatable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -20,6 +21,7 @@ import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
+import com.zlin.smartrefresh.api.config.BallInfoConfig;
 import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
 import com.zlin.smartrefresh.threeball.ThreeBallAbstract;
 import java.util.List;
@@ -39,12 +41,16 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
     protected String mTextFinish;//"刷新完成";
     protected String mTextFailed;//"刷新失败";
 
+    private float width=0f;
+    private float height=0f;
+
     public ThreeBallHeader(Context context) {
         this(context, null);
     }
 
     public ThreeBallHeader(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
+
 
         //加载布局
         View.inflate(context, R.layout.smartrefresh_layout_header_threeball, this);
@@ -56,9 +62,17 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ThreeBallHeader);
 
+        int ballRadius = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallRadius, 0);
+        int ballHgap = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallHgap, 0);
+        int ballVgap = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallVgap, 0);
+
+
+        width=3*(2*ballRadius)+2*ballHgap;
+        height=2*ballRadius+ballVgap;
+
         LinearLayout.LayoutParams lpProgress = (LinearLayout.LayoutParams) progressView.getLayoutParams();
-        lpProgress.width = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballDrawableProgressWidth, lpProgress.width);
-        lpProgress.height = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballDrawableProgressHeight, lpProgress.height);
+        lpProgress.width = (int) width;
+        lpProgress.height = (int) height;
 
         LinearLayout.LayoutParams lpTextTitle = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lpTextTitle.topMargin = ta.getDimensionPixelSize(R.styleable.ThreeBallHeader_tballTitleMarginTop, SmartUtil.dp2px(0));
@@ -67,13 +81,16 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         mFinishDuration = ta.getInt(R.styleable.ThreeBallHeader_tballFinishDuration, mFinishDuration);
         mSpinnerStyle = SpinnerStyle.values[ta.getInt(R.styleable.ThreeBallHeader_tballSpinnerStyle,mSpinnerStyle.ordinal)];
 
-        if (ta.hasValue(R.styleable.ThreeBallHeader_tballDrawableProgressRef)) {
-            mProgressView.setImageDrawable(ta.getDrawable(R.styleable.ThreeBallHeader_tballDrawableProgressRef));
-        } else if (mProgressView.getDrawable() == null) {
-            mProgressDrawable = new ThreeBallDrawable();
-            mProgressDrawable.setColor(0xff666666);
-            mProgressView.setImageDrawable(mProgressDrawable);
-        }
+        BallInfoConfig ballInfoConfig=new BallInfoConfig();
+        ballInfoConfig.setBallRadius(ballRadius);
+        ballInfoConfig.setBallHgap(ballHgap);
+        ballInfoConfig.setBallVgap(ballVgap);
+        ballInfoConfig.setViewWidth(width);
+        ballInfoConfig.setViewHeight(height);
+
+        mProgressDrawable = new ThreeBallDrawable(ballInfoConfig);
+        mProgressDrawable.setColor(0xff666666);
+        mProgressView.setImageDrawable(mProgressDrawable);
 
         if (ta.hasValue(R.styleable.ThreeBallHeader_tballTitleTextSize)) {
             mTitleText.setTextSize(TypedValue.COMPLEX_UNIT_PX, ta.getDimensionPixelSize(R.styleable.ThreeBallHeader_tballTitleTextSize, SmartUtil.dp2px(16)));
@@ -138,7 +155,7 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         if (thisView.isInEditMode()) {
             //arrowView.setVisibility(GONE);
         } else {
-            progressView.setVisibility(GONE);
+            //progressView.setVisibility(GONE);
         }
 
         try {//try 不能删除-否则会出现兼容性问题

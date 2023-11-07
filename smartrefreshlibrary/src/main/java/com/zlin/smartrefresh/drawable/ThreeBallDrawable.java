@@ -11,6 +11,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.zlin.smartrefresh.api.config.BallInfoConfig;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -34,7 +37,21 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
     private ArrayList<Integer> listRandom=new ArrayList<>();
 
-    public ThreeBallDrawable() {
+    private float ballRadius=0f;
+    private float ballHgap=0f;
+    private float ballVgap=0f;
+
+    private float width=0f;
+    private float height=0f;
+
+    public ThreeBallDrawable(BallInfoConfig ballInfoConfig) {
+        ballRadius=ballInfoConfig.getBallRadius();
+        ballHgap=ballInfoConfig.getBallHgap();
+        ballVgap=ballInfoConfig.getBallVgap();
+        width=ballInfoConfig.getViewWidth();
+        height=ballInfoConfig.getViewHeight();
+
+
 //        mValueAnimator = ValueAnimator.ofInt(30, 3600);
 //        mValueAnimator.setDuration(90000);
 //        mValueAnimator.setInterpolator(null);
@@ -54,32 +71,6 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         drawable.invalidateSelf();
     }
 
-    //<editor-fold desc="Drawable">
-    public void draw02(@NonNull Canvas canvas) {
-        final Drawable drawable = ThreeBallDrawable.this;
-        final Rect bounds = drawable.getBounds();
-        final int width = bounds.width();
-        final int height = bounds.height();
-        final float r = Math.max(1f, width / 22f);
-
-        if (mWidth != width || mHeight != height) {
-            mPath.reset();
-            mPath.addCircle(width - r, height / 2f, r, Path.Direction.CW);
-            mPath.addRect(width - 5 * r, height / 2f - r, width - r, height / 2f + r, Path.Direction.CW);
-            mPath.addCircle(width - 5 * r, height / 2f, r, Path.Direction.CW);
-            mWidth = width;
-            mHeight = height;
-        }
-
-        canvas.save();
-        canvas.rotate(mProgressDegree, (width) / 2f, (height) / 2f);
-        for (int i = 0; i < 12; i++) {
-            mPaint.setAlpha((i+5) * 0x11);
-            canvas.rotate(30, (width) / 2f, (height) / 2f);
-            canvas.drawPath(mPath, mPaint);
-        }
-        canvas.restore();
-    }
 
     private  void randomNumberGenerator () {
         listRandom.clear();
@@ -114,13 +105,12 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         canvas.drawColor(Color.WHITE);
         final Drawable drawable = ThreeBallDrawable.this;
         final Rect bounds = drawable.getBounds();
-        final int width=76;//bounds.width();
-        final int height=76;//bounds.height()*2/3;
-        final float r = width/8;
+        //bounds.width();
+        //bounds.height()*2/3;
 
-        final float sFloat=r;
+        final float sFloat=ballRadius;
         final float mFload=height/2;
-        final float eFloat=(height-r-r);
+        final float eFloat=(height-ballRadius);
         final ArrayList<Float> list=new ArrayList<>();
         list.add(sFloat);
         list.add(mFload);
@@ -133,20 +123,18 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
 
 //        randomNumberGenerator();
-//        value1=list.get(listRandom.get(0));
-//        value2=list.get(listRandom.get(1));
-//        value3=list.get(listRandom.get(2));
+//        float value1=list.get(listRandom.get(0));
+//        float value2=list.get(listRandom.get(1));
+//        float value3=list.get(listRandom.get(2));
 //        Log.e("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+listRandom.get(0)+"/"+listRandom.get(1)+"/"+listRandom.get(2)+"---");
 
         Log.e("Animation2","scheduledExecutorService="+scheduledExecutorService);
         Log.e("Animation2","scheduledFuture="+scheduledFuture);
 
         mPath.reset();
-        mPath.addCircle(r, value1, r, Path.Direction.CW);
-        mPath.addCircle(4*r, value2, r, Path.Direction.CW);
-        mPath.addCircle(7*r, value3, r, Path.Direction.CW);
-        mWidth = width;
-        mHeight = height;
+        mPath.addCircle(ballRadius, value1, ballRadius, Path.Direction.CW);
+        mPath.addCircle(3*ballRadius+ballHgap, value2, ballRadius, Path.Direction.CW);
+        mPath.addCircle(5*ballRadius+2*ballHgap, value3, ballRadius, Path.Direction.CW);
 
         //canvas.save();
         canvas.drawPath(mPath, mPaint);

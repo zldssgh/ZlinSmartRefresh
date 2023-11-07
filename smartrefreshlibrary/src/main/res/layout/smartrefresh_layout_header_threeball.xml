@@ -21,6 +21,7 @@
             android:id="@+id/srl_tball_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/black"
             android:contentDescription="@android:string/untitled"
             tools:tint="#6C6868"
             tools:src="@android:drawable/stat_notify_sync"

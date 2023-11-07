@@ -11,9 +11,9 @@
         <attr name="tballTitleMarginTop" format="dimension"/>
         <attr name="tballTitleShowEnable" format="boolean" />
 
-        <attr name="tballDrawableProgressRef" format="reference"/>
-        <attr name="tballDrawableProgressWidth" format="dimension"/>
-        <attr name="tballDrawableProgressHeight" format="dimension"/>
+        <attr name="tballBallRadius" format="dimension"/>
+        <attr name="tballBallHgap" format="dimension"/>
+        <attr name="tballBallVgap" format="dimension"/>
 
         <attr name="tballTextPulling" format="string"/>
         <attr name="tballTextLoading" format="string"/>

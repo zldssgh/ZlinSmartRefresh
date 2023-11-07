@@ -18,6 +18,8 @@ import com.scwang.smart.refresh.layout.simple.SimpleComponent;
 import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
 import com.zlin.smartrefresh.drawable.PaintDrawable;
+import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -126,7 +128,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         if (progressView.getVisibility() != VISIBLE) {
             progressView.setVisibility(VISIBLE);
             Drawable drawable = mProgressView.getDrawable();
-            if (drawable instanceof Animatable) {
+            if ((drawable instanceof Animatable)) {
                 ((Animatable) drawable).start();
             } else {
                 progressView.animate().rotation(36000).setDuration(100000);
