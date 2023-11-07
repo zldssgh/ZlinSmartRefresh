@@ -114,8 +114,8 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         canvas.drawColor(Color.WHITE);
         final Drawable drawable = ThreeBallDrawable.this;
         final Rect bounds = drawable.getBounds();
-        final int width = bounds.width();
-        final int height = bounds.height()*2/3;
+        final int width=76;//bounds.width();
+        final int height=76;//bounds.height()*2/3;
         final float r = width/8;
 
         final float sFloat=r;

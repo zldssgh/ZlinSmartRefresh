@@ -19,8 +19,8 @@
         >
         <ImageView
             android:id="@+id/srl_tball_progress"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@android:string/untitled"
             tools:tint="#6C6868"
             tools:src="@android:drawable/stat_notify_sync"
