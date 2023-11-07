@@ -17,18 +17,18 @@
             android:layout_height="match_parent"
             app:srlAccentColor="@android:color/black"
             app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="#B1B2B7"
             >
             <com.zlin.smartrefresh.api.header.ThreeBallHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:tballPrimaryColor="#F8F2F1"
                 app:tballAccentColor="#900089"
-                app:tballBallRadius="15dp"
-                app:tballBallHgap="20dp"
-                app:tballBallVgap="25dp"
+                app:tballBallRadius="3.9dp"
+                app:tballBallHgap="8dp"
+                app:tballBallVgap="5dp"
                 app:tballTitleMarginTop="3dp"
-                app:tballTitleShowEnable="true"
-                app:tballTitleTextSize="19sp"
+                app:tballTitleShowEnable="false"
+                app:tballTitleTextSize="12sp"
                 />
 
             <androidx.recyclerview.widget.RecyclerView

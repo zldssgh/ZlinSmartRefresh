@@ -102,7 +102,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.WHITE);
         final Drawable drawable = ThreeBallDrawable.this;
         final Rect bounds = drawable.getBounds();
         //bounds.width();
