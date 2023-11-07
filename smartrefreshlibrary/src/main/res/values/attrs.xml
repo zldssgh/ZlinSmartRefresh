@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ThreeBallHeader">
+        <attr name="tballSpinnerStyle"/>
+        <attr name="tballPrimaryColor" format="color"/>
+        <attr name="tballAccentColor" format="color"/>
+        <attr name="tballFinishDuration" format="integer"/>
+
+        <attr name="tballTitleTextSize" format="dimension"/>
+        <attr name="tballTitleMarginTop" format="dimension"/>
+        <attr name="tballTitleShowEnable" format="boolean" />
+
+        <attr name="tballDrawableProgressRef" format="reference"/>
+        <attr name="tballDrawableProgressWidth" format="dimension"/>
+        <attr name="tballDrawableProgressHeight" format="dimension"/>
+
+        <attr name="tballTextPulling" format="string"/>
+        <attr name="tballTextLoading" format="string"/>
+        <attr name="tballTextRelease" format="string"/>
+        <attr name="tballTextFinish" format="string"/>
+        <attr name="tballTextFailed" format="string"/>
+        <attr name="tballTextUpdate" format="string"/>
+        <attr name="tballTextSecondary" format="string"/>
+        <attr name="tballTextRefreshing" format="string"/>
+    </declare-styleable>
+
+    <attr name="tballSpinnerStyle" format="enum">
+        <enum name="Translate" value="0"/><!--平行移动-->
+        <enum name="Scale" value="1"/><!--拉伸形变-->
+        <enum name="FixedBehind" value="2"/><!--固定在背后-->
+    </attr>
+
+</resources>
