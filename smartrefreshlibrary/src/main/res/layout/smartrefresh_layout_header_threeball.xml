@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     tools:paddingTop="@dimen/tball_header_paddingTop"
     tools:paddingBottom="@dimen/tball_header_paddingBottom"
-    tools:background="#eee"
+    tools:background="@color/tball_primary_color"
     tools:parentTag="android.widget.RelativeLayout"
     >
 
@@ -23,20 +23,20 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:contentDescription="@android:string/untitled"
-            tools:tint="#6C6868"
             tools:src="@android:drawable/stat_notify_sync"
+            tools:tint="@color/tball_accent_color"
             />
 
         <TextView
             android:id="@+id/srl_tball_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tball_title_margintop"
+            android:textColor="@color/tball_accent_color"
+            android:textSize="@dimen/tball_title_textsize"
             android:maxLines="1"
-            android:textColor="#666666"
-            android:textSize="15sp"
-            android:text="下拉刷新"
+            tools:text="下拉刷新"
             />
-
     </LinearLayout>
 
 </merge>

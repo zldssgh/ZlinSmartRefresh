@@ -148,7 +148,9 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 //        }
 
         try{
-            scheduledFuture.cancel(true);
+            if (scheduledFuture!=null){
+                scheduledFuture.cancel(true);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

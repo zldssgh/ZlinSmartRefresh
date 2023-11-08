@@ -21,14 +21,13 @@
             <com.zlin.smartrefresh.api.header.ThreeBallHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                app:tballPrimaryColor="#F8F2F1"
+                app:tballPrimaryColor="#CADDB3"
                 app:tballAccentColor="#900089"
                 app:tballBallRadius="3.9dp"
                 app:tballBallHgap="8dp"
                 app:tballBallVgap="5dp"
                 app:tballTitleMarginTop="3dp"
-                app:tballTitleShowEnable="false"
+                app:tballTitleShowEnable="true"
                 app:tballTitleTextSize="12sp"
                 />
 

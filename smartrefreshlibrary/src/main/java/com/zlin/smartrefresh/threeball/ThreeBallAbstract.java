@@ -42,7 +42,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     protected boolean mSetPrimaryColor;
     protected boolean mSetAccentColor;
 
-    protected int mBackgroundColor;
+    protected int mPrimaryColor;
     protected int mFinishDuration = 500;
     protected int mPaddingTop = 0;
     protected int mPaddingBottom = 0;
@@ -110,7 +110,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     @Override
     public void onInitialized(@NonNull RefreshKernel kernel, int height, int maxDragHeight) {
         mRefreshKernel = kernel;
-        mRefreshKernel.requestDrawBackgroundFor(this, mBackgroundColor);
+        mRefreshKernel.requestDrawBackgroundFor(this, mPrimaryColor);
     }
 
     @Override
@@ -144,13 +144,14 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         final View progressView = mProgressView;
         Drawable drawable = mProgressView.getDrawable();
         if (drawable instanceof Animatable) {
-            if (((Animatable) drawable).isRunning()) {
-                ((Animatable) drawable).stop();
+            Animatable animatable = (Animatable) drawable;
+            if ((animatable).isRunning()) {
+                animatable.stop();
             }
         } else {
             progressView.animate().rotation(0).setDuration(0);
         }
-        progressView.setVisibility(GONE);
+        progressView.setVisibility(INVISIBLE);
         return mFinishDuration;//延迟500毫秒之后再弹回
     }
 
@@ -200,7 +201,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
 
     public T setPrimaryColor(@ColorInt int primaryColor) {
         mSetPrimaryColor = true;
-        mBackgroundColor = primaryColor;
+        mPrimaryColor = primaryColor;
         if (mRefreshKernel != null) {
             mRefreshKernel.requestDrawBackgroundFor(this, primaryColor);
         }

@@ -1,6 +1,5 @@
 package com.zlin.smartrefresh.api.header;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +8,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -65,7 +63,6 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
 
         mProgressDrawable = new ThreeBallDrawable();
         mProgressView.setImageDrawable(mProgressDrawable);
-        mProgressView.setVisibility(View.GONE);
 
         mBallRadius = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallRadius, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_ball_radius)));
         mBallHgap = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallHgap, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_ball_hgap)));
@@ -90,8 +87,8 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         lpTitleView.topMargin = titleMarginTop;
         mTitleView.setLayoutParams(lpTitleView);
 
-        mFinishDuration = ta.getInt(R.styleable.ThreeBallHeader_tballFinishDuration, mFinishDuration);
         mSpinnerStyle = SpinnerStyle.values[ta.getInt(R.styleable.ThreeBallHeader_tballSpinnerStyle, mSpinnerStyle.ordinal)];
+        mFinishDuration = ta.getInt(R.styleable.ThreeBallHeader_tballFinishDuration, mFinishDuration);
 
         float titleTextSize=ta.getDimensionPixelSize(R.styleable.ThreeBallHeader_tballTitleTextSize, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_title_textsize)));
         mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
@@ -141,9 +138,9 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         mTitleView.setText(thisView.isInEditMode() ? mTextRefreshing : mTextPulling);
 
         if (thisView.isInEditMode()) {
-            //arrowView.setVisibility(GONE);
+            //mProgressView.setVisibility(GONE);
         } else {
-            //progressView.setVisibility(GONE);
+            //mProgressView.setVisibility(GONE);
         }
 
         try {//try 不能删除-否则会出现兼容性问题
