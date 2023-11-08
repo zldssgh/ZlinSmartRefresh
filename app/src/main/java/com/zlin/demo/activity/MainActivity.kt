@@ -40,18 +40,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onEventListenerHandler(){
-//        smartRefreshLayout?.setOnRefreshListener {
-//            listSmartRefreshLayoutItem.clear()
-//            listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())
-//            smartRefreshAdapter?.notifyDataSetChanged()
-//
-//            smartRefreshLayout?.finishRefresh(700)
-//        }
-//        smartRefreshLayout.setOnLoadMoreListener {
-//            listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())
-//            smartRefreshAdapter?.notifyDataSetChanged()
-//            smartRefreshLayout.finishLoadMore(true)
-//        }
+        smartRefreshLayout?.setOnRefreshListener {
+            listSmartRefreshLayoutItem.clear()
+            listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())
+            smartRefreshAdapter?.notifyDataSetChanged()
+
+            smartRefreshLayout?.finishRefresh(700)
+        }
+        smartRefreshLayout?.setOnLoadMoreListener {
+            listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())
+            smartRefreshAdapter?.notifyDataSetChanged()
+            smartRefreshLayout?.finishLoadMore(true)
+        }
     }
     
 }

@@ -2,7 +2,6 @@ package com.zlin.smartrefresh.drawable;
 
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
@@ -11,9 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import androidx.annotation.NonNull;
-
 import com.zlin.smartrefresh.api.config.BallInfoConfig;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -24,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ThreeBallDrawable extends PaintDrawable implements Animatable , ValueAnimator.AnimatorUpdateListener{
 
-    protected int mWidth = 0;
-    protected int mHeight = 0;
     protected int mProgressDegree = 0;
     private ValueAnimator mValueAnimator;
     protected Path mPath = new Path();
@@ -37,21 +32,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
     private ArrayList<Integer> listRandom=new ArrayList<>();
 
-    private float ballRadius=0f;
-    private float ballHgap=0f;
-    private float ballVgap=0f;
-
-    private float width=0f;
-    private float height=0f;
-
-    public ThreeBallDrawable(BallInfoConfig ballInfoConfig) {
-        ballRadius=ballInfoConfig.getBallRadius();
-        ballHgap=ballInfoConfig.getBallHgap();
-        ballVgap=ballInfoConfig.getBallVgap();
-        width=ballInfoConfig.getViewWidth();
-        height=ballInfoConfig.getViewHeight();
-
-
+    public ThreeBallDrawable() {
 //        mValueAnimator = ValueAnimator.ofInt(30, 3600);
 //        mValueAnimator.setDuration(90000);
 //        mValueAnimator.setInterpolator(null);
@@ -108,9 +89,9 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         //bounds.width();
         //bounds.height()*2/3;
 
-        final float sFloat=ballRadius;
-        final float mFload=height/2;
-        final float eFloat=(height-ballRadius);
+        final float sFloat= mBallRadius;
+        final float mFload= mDrawableHeight /2;
+        final float eFloat=(mDrawableHeight - mBallRadius);
         final ArrayList<Float> list=new ArrayList<>();
         list.add(sFloat);
         list.add(mFload);
@@ -132,9 +113,9 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         Log.e("Animation2","scheduledFuture="+scheduledFuture);
 
         mPath.reset();
-        mPath.addCircle(ballRadius, value1, ballRadius, Path.Direction.CW);
-        mPath.addCircle(3*ballRadius+ballHgap, value2, ballRadius, Path.Direction.CW);
-        mPath.addCircle(5*ballRadius+2*ballHgap, value3, ballRadius, Path.Direction.CW);
+        mPath.addCircle(mBallRadius, value1, mBallRadius, Path.Direction.CW);
+        mPath.addCircle(3* mBallRadius + mBallHgap, value2, mBallRadius, Path.Direction.CW);
+        mPath.addCircle(5* mBallRadius +2* mBallHgap, value3, mBallRadius, Path.Direction.CW);
 
         //canvas.save();
         canvas.drawPath(mPath, mPaint);

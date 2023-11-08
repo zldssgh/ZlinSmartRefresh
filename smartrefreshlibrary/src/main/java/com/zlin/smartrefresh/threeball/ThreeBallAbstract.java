@@ -13,13 +13,12 @@ import android.widget.TextView;
 import com.scwang.smart.refresh.layout.api.RefreshComponent;
 import com.scwang.smart.refresh.layout.api.RefreshKernel;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.simple.SimpleComponent;
 import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
 import com.zlin.smartrefresh.drawable.PaintDrawable;
-import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -33,25 +32,25 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     public static final int ID_IMAGE_PROGRESS = R.id.srl_tball_progress;
     public static final int ID_TEXT_TITLE = R.id.srl_tball_title;
 
-    protected TextView mTitleText;
-
     protected ImageView mProgressView;
+    protected TextView mTitleView;
 
     protected RefreshKernel mRefreshKernel;
 
     protected PaintDrawable mProgressDrawable;
 
-    protected boolean mSetAccentColor;
     protected boolean mSetPrimaryColor;
+    protected boolean mSetAccentColor;
+
     protected int mBackgroundColor;
     protected int mFinishDuration = 500;
-    protected int mPaddingTop = 20;
-    protected int mPaddingBottom = 20;
+    protected int mPaddingTop = 0;
+    protected int mPaddingBottom = 0;
     protected int mMinHeightOfContent = 0;
 
-    //<editor-fold desc="RelativeLayout">
     public ThreeBallAbstract(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         mSpinnerStyle = SpinnerStyle.Translate;
     }
 
@@ -64,8 +63,8 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
             if (mPaddingTop == 0 || mPaddingBottom == 0) {
                 int paddingLeft = thisView.getPaddingLeft();
                 int paddingRight = thisView.getPaddingRight();
-                mPaddingTop = mPaddingTop == 0 ? SmartUtil.dp2px(20) : mPaddingTop;
-                mPaddingBottom = mPaddingBottom == 0 ? SmartUtil.dp2px(20) : mPaddingBottom;
+                mPaddingTop = mPaddingTop == 0 ? SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_header_paddingTop)) : mPaddingTop;
+                mPaddingBottom = mPaddingBottom == 0 ? SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_header_paddingBottom)) : mPaddingBottom;
                 thisView.setPadding(paddingLeft, mPaddingTop, paddingRight, mPaddingBottom);
             }
             final ViewGroup thisGroup = this;
@@ -108,14 +107,6 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected T self() {
-        return (T) this;
-    }
-
-    //</editor-fold>
-
-    //<editor-fold desc="RefreshHeader">
     @Override
     public void onInitialized(@NonNull RefreshKernel kernel, int height, int maxDragHeight) {
         mRefreshKernel = kernel;
@@ -137,8 +128,15 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     }
 
     @Override
+    public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
+        if (newState==RefreshState.PullDownToRefresh){
+            onStartAnimator(refreshLayout, 0, 0);
+        }
+    }
+
+    @Override
     public void onReleased(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
-        onStartAnimator(refreshLayout, height, maxDragHeight);
+        //onStartAnimator(refreshLayout, height, maxDragHeight);
     }
 
     @Override
@@ -172,9 +170,77 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
             }
         }
     }
-    //</editor-fold>
 
-    //<editor-fold desc="API">
+    @SuppressWarnings("unchecked")
+    protected T self() {
+        return (T) this;
+    }
+
+    public T setSpinnerStyle(SpinnerStyle style) {
+        this.mSpinnerStyle = style;
+        return self();
+    }
+
+    public T setFinishDuration(int delay) {
+        mFinishDuration = delay;
+        return self();
+    }
+
+    public T setPrimaryColorId(@ColorRes int colorId) {
+        final View thisView = this;
+        setPrimaryColor(ContextCompat.getColor(thisView.getContext(), colorId));
+        return self();
+    }
+
+    public T setAccentColorId(@ColorRes int colorId) {
+        final View thisView = this;
+        setAccentColor(ContextCompat.getColor(thisView.getContext(), colorId));
+        return self();
+    }
+
+    public T setPrimaryColor(@ColorInt int primaryColor) {
+        mSetPrimaryColor = true;
+        mBackgroundColor = primaryColor;
+        if (mRefreshKernel != null) {
+            mRefreshKernel.requestDrawBackgroundFor(this, primaryColor);
+        }
+        return self();
+    }
+
+    public T setAccentColor(@ColorInt int accentColor) {
+        mSetAccentColor = true;
+        mTitleView.setTextColor(accentColor);
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setColor(accentColor);
+            mProgressView.invalidateDrawable(mProgressDrawable);
+        }
+        return self();
+    }
+
+    public T setBallRadius(float ballRadius){
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setBallRadius(ballRadius);
+            mProgressView.invalidateDrawable(mProgressDrawable);
+        }
+        return self();
+    }
+
+    public T setBallHgap(float ballHgap){
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setBallHgap(ballHgap);
+            mProgressView.invalidateDrawable(mProgressDrawable);
+        }
+        return self();
+    }
+
+    public T setBallVgap(float ballVgap){
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setBallVgap(ballVgap);
+            mProgressView.invalidateDrawable(mProgressDrawable);
+        }
+        return self();
+    }
+
     public T setProgressBitmap(Bitmap bitmap) {
         mProgressDrawable = null;
         mProgressView.setImageBitmap(bitmap);
@@ -193,108 +259,61 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         return self();
     }
 
-    public T setSpinnerStyle(SpinnerStyle style) {
-        this.mSpinnerStyle = style;
+    public T setDrawableProgressSizeDp(float dpWidth, float dpHeight) {
+        ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
+        lpProgressView.width = SmartUtil.dp2px(dpWidth);
+        lpProgressView.height = SmartUtil.dp2px(dpHeight);
+        mProgressView.setLayoutParams(lpProgressView);
         return self();
     }
 
-    public T setPrimaryColor(@ColorInt int primaryColor) {
-        mSetPrimaryColor = true;
-        mBackgroundColor = primaryColor;
-        if (mRefreshKernel != null) {
-            mRefreshKernel.requestDrawBackgroundFor(this, primaryColor);
-        }
+    public T setDrawableProgressSizePx(float pxWidth, float pxHeight) {
+        ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
+        lpProgressView.width = (int) pxWidth;
+        lpProgressView.height = (int) pxHeight;
+        mProgressView.setLayoutParams(lpProgressView);
         return self();
     }
 
-    public T setAccentColor(@ColorInt int accentColor) {
-        mSetAccentColor = true;
-        mTitleText.setTextColor(accentColor);
-        if (mProgressDrawable != null) {
-            mProgressDrawable.setColor(accentColor);
-            mProgressView.invalidateDrawable(mProgressDrawable);
-        }
+    public T setTextTitleMarginTop(float dpTop) {
+        MarginLayoutParams lpTitleView = (MarginLayoutParams) mTitleView.getLayoutParams();
+        lpTitleView.topMargin = SmartUtil.dp2px(dpTop);
+        mTitleView.setLayoutParams(lpTitleView);
         return self();
     }
 
-    public T setPrimaryColorId(@ColorRes int colorId) {
-        final View thisView = this;
-        setPrimaryColor(ContextCompat.getColor(thisView.getContext(), colorId));
+    public T setTextTitleMarginTopPx(int pxTop) {
+        MarginLayoutParams lpTitleView = (MarginLayoutParams) mTitleView.getLayoutParams();
+        lpTitleView.topMargin = pxTop;
+        mTitleView.setLayoutParams(lpTitleView);
         return self();
     }
 
-    public T setAccentColorId(@ColorRes int colorId) {
-        final View thisView = this;
-        setAccentColor(ContextCompat.getColor(thisView.getContext(), colorId));
-        return self();
-    }
-
-    public T setFinishDuration(int delay) {
-        mFinishDuration = delay;
-        return self();
-    }
-
-    public T setTextSizeTitle(float size) {
-        mTitleText.setTextSize(size);
+    public T setTextTitleSize(float size) {
+        mTitleView.setTextSize(size);
         if (mRefreshKernel != null) {
             mRefreshKernel.requestRemeasureHeightFor(this);
         }
         return self();
     }
 
-    public T setTextSizeTitle(int unit, float size) {
-        mTitleText.setTextSize(unit, size);
+    public T setTextTitleSize(int unit, float size) {
+        mTitleView.setTextSize(unit, size);
         if (mRefreshKernel != null) {
             mRefreshKernel.requestRemeasureHeightFor(this);
         }
         return self();
     }
 
-    public T setDrawableMarginRight(float dp) {
-        final View progressView = mProgressView;
-        MarginLayoutParams lpProgress = (MarginLayoutParams) progressView.getLayoutParams();
-        lpProgress.rightMargin = SmartUtil.dp2px(dp);
-        progressView.setLayoutParams(lpProgress);
-        return self();
-    }
-
-    public T setDrawableMarginRightPx(int px) {
-        MarginLayoutParams lpProgress = (MarginLayoutParams)mProgressView.getLayoutParams();
-        lpProgress.rightMargin = px;
-        mProgressView.setLayoutParams(lpProgress);
-        return self();
-    }
-
-    public T setDrawableSize(float dp) {
-        final View progressView = mProgressView;
-        ViewGroup.LayoutParams lpProgress = progressView.getLayoutParams();
-        lpProgress.width = SmartUtil.dp2px(dp);
-        lpProgress.height = SmartUtil.dp2px(dp);
-        progressView.setLayoutParams(lpProgress);
-        return self();
-    }
-
-    public T setDrawableSizePx(int px) {
-        ViewGroup.LayoutParams lpProgress = mProgressView.getLayoutParams();
-        lpProgress.width = px;
-        lpProgress.height = px;
-        mProgressView.setLayoutParams(lpProgress);
-        return self();
-    }
-
-    public T setDrawableProgressSize(float dp) {
-        final View progressView = mProgressView;
-        ViewGroup.LayoutParams lpProgress = progressView.getLayoutParams();
-        lpProgress.height = lpProgress.width = SmartUtil.dp2px(dp);
-        progressView.setLayoutParams(lpProgress);
-        return self();
-    }
-
-    public T setDrawableProgressSizePx(int px) {
-        ViewGroup.LayoutParams lpProgress = mProgressView.getLayoutParams();
-        lpProgress.width = px;
-        lpProgress.height = px;
-        mProgressView.setLayoutParams(lpProgress);
+    public T setTextShowEnable(boolean showEnable) {
+        if (showEnable){
+            mTitleView.setVisibility(View.VISIBLE);
+        }else{
+            mTitleView.setVisibility(View.GONE);
+        }
+        if (mRefreshKernel != null) {
+            mRefreshKernel.requestRemeasureHeightFor(this);
+        }
         return self();
     }
 

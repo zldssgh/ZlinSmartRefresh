@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:paddingTop="20dp"
-    tools:paddingBottom="20dp"
+    tools:paddingTop="@dimen/tball_header_paddingTop"
+    tools:paddingBottom="@dimen/tball_header_paddingBottom"
     tools:background="#eee"
     tools:parentTag="android.widget.RelativeLayout"
     >
@@ -36,6 +36,7 @@
             android:textSize="15sp"
             android:text="下拉刷新"
             />
+
     </LinearLayout>
 
 </merge>

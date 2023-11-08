@@ -7,13 +7,13 @@
         <attr name="tballAccentColor" format="color"/>
         <attr name="tballFinishDuration" format="integer"/>
 
-        <attr name="tballTitleTextSize" format="dimension"/>
-        <attr name="tballTitleMarginTop" format="dimension"/>
-        <attr name="tballTitleShowEnable" format="boolean" />
-
         <attr name="tballBallRadius" format="dimension"/>
         <attr name="tballBallHgap" format="dimension"/>
         <attr name="tballBallVgap" format="dimension"/>
+
+        <attr name="tballTitleTextSize" format="dimension"/>
+        <attr name="tballTitleMarginTop" format="dimension"/>
+        <attr name="tballTitleShowEnable" format="boolean" />
 
         <attr name="tballTextPulling" format="string"/>
         <attr name="tballTextLoading" format="string"/>

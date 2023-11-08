@@ -21,6 +21,7 @@
             <com.zlin.smartrefresh.api.header.ThreeBallHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 app:tballPrimaryColor="#F8F2F1"
                 app:tballAccentColor="#900089"
                 app:tballBallRadius="3.9dp"

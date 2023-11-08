@@ -1,0 +1,13 @@
+<resources>
+
+    <dimen name="tball_header_paddingTop">20dp</dimen>
+    <dimen name="tball_header_paddingBottom">20dp</dimen>
+
+    <dimen name="tball_ball_radius">3.9dp</dimen>
+    <dimen name="tball_ball_hgap">8dp</dimen>
+    <dimen name="tball_ball_vgap">5dp</dimen>
+
+    <dimen name="tball_title_textsize">16sp</dimen>
+    <dimen name="tball_title_margintop">5dp</dimen>
+
+</resources>

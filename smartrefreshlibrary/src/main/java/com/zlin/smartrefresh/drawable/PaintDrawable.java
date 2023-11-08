@@ -5,18 +5,22 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
-/**
- * 画笔 Drawable
- * Created by scwang on 2017/6/16.
- */
 public abstract class PaintDrawable extends Drawable {
 
     protected Paint mPaint = new Paint();
+
+    protected float mBallRadius =0f;
+    protected float mBallHgap =0f;
+    protected float mBallVgap =0f;
+
+    protected float mDrawableWidth =0f;
+    protected float mDrawableHeight =0f;
 
     protected PaintDrawable() {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
         mPaint.setColor(0xffaaaaaa);
+        //0xff666666
     }
 
     public void setColor(int color) {
@@ -36,6 +40,26 @@ public abstract class PaintDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    public void setBallRadius(float ballRadius){
+        this.mBallRadius=ballRadius;
+        updateDrawableSize();
+    }
+
+    public void setBallHgap(float ballHgap){
+        this.mBallHgap=ballHgap;
+        updateDrawableSize();
+    }
+
+    public void setBallVgap(float ballVgap){
+        this.mBallVgap=ballVgap;
+        updateDrawableSize();
+    }
+
+    private void updateDrawableSize(){
+        mDrawableWidth=3*(2*mBallRadius)+2*mBallHgap;
+        mDrawableHeight=2*mBallRadius+mBallVgap;
     }
 
 }
