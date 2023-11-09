@@ -18,19 +18,20 @@
             app:srlAccentColor="@android:color/black"
             app:srlEnablePreviewInEditMode="true"
             >
-            <com.zlin.smartrefresh.api.header.ThreeBallHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tballPrimaryColor="#CADDB3"
-                app:tballAccentColor="#900089"
-                app:tballBallRadius="3.9dp"
-                app:tballBallHgap="8dp"
-                app:tballBallVgap="5dp"
-                app:tballTitleMarginTop="5dp"
-                app:tballTitleTextSize="12sp"
-                app:tballTitleShowEnable="false"
-                app:tballTitleBoldEnable="true"
-                />
+<!--            <com.zlin.smartrefresh.api.header.ThreeBallHeader-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:tballPrimaryColor="#CADDB3"-->
+<!--                app:tballAccentColor="#900089"-->
+<!--                app:tballCanvasColor="#DD2020"-->
+<!--                app:tballBallRadius="3.9dp"-->
+<!--                app:tballBallHgap="8dp"-->
+<!--                app:tballBallVgap="5dp"-->
+<!--                app:tballTitleMarginTop="5dp"-->
+<!--                app:tballTitleTextSize="12sp"-->
+<!--                app:tballTitleShowEnable="true"-->
+<!--                app:tballTitleBoldEnable="true"-->
+<!--                />-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_smart_refresh"

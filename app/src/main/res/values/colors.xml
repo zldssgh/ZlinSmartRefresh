@@ -10,4 +10,5 @@
 
     <color name="demo_primary_color">#615E5E</color>
     <color name="demo_accent_color">#FFFFFFFF</color>
+    <color name="demo_canvas_color">#459EC6</color>
 </resources>

@@ -9,6 +9,8 @@ public abstract class PaintDrawable extends Drawable {
 
     protected Paint mPaint = new Paint();
 
+    protected int mCanvasColor=-1;
+
     protected float mBallRadius =0f;
     protected float mBallHgap =0f;
     protected float mBallVgap =0f;
@@ -40,6 +42,10 @@ public abstract class PaintDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    public void setCanvasColor(int mCanvasColor){
+        this.mCanvasColor=mCanvasColor;
     }
 
     public void setBallRadius(float ballRadius){

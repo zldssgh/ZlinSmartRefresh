@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())
             smartRefreshAdapter?.notifyDataSetChanged()
 
-            smartRefreshLayout?.finishRefresh(700)
+            smartRefreshLayout?.finishRefresh(3000)
         }
         smartRefreshLayout?.setOnLoadMoreListener {
             listSmartRefreshLayoutItem.addAll(SmartRefreshLayoutItem.values())

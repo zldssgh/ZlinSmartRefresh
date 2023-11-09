@@ -59,7 +59,9 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        //canvas.drawColor(Color.BLACK);
+        if (mCanvasColor!=-1){
+            canvas.drawColor(mCanvasColor);
+        }
 
         final Drawable drawable = ThreeBallDrawable.this;
         final Rect bounds = drawable.getBounds();
@@ -107,6 +109,8 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
                 mValueAnimator.start();
            }
         }else{
+            Log.e("Animation5","打开动画1111111111111111111111111111111111111111111");
+
             if (scheduledExecutorService==null){
                 scheduledExecutorService = Executors.newScheduledThreadPool(1);
             }
@@ -114,7 +118,13 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
                 @Override
                 public void run() {
                     Log.e("Animation4","执行55555555555555555555555555555555555555555555555555555555555");
-                    invalidateSelf();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            invalidateSelf();
+                        }
+                    });
+
                 }
             }, 0, 200, TimeUnit.MILLISECONDS);
         }
@@ -130,7 +140,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
                 mValueAnimator.cancel();
            }
         }else{
-            Log.e("Animation4","正在停止");
+            Log.e("Animation5","关闭动画2222222222222222222222222222222222222");
             try{
                 if (scheduledFuture!=null && !scheduledFuture.isCancelled()){
                     Log.e("Animation4","执行001");

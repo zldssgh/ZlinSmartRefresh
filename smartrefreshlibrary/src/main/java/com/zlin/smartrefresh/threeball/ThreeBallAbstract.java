@@ -68,8 +68,8 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
             if (mPaddingTop == 0 || mPaddingBottom == 0) {
                 int paddingLeft = thisView.getPaddingLeft();
                 int paddingRight = thisView.getPaddingRight();
-                mPaddingTop = mPaddingTop == 0 ? SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_header_paddingTop)) : mPaddingTop;
-                mPaddingBottom = mPaddingBottom == 0 ? SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_header_paddingBottom)) : mPaddingBottom;
+                mPaddingTop = mPaddingTop == 0 ? (int) getResources().getDimension(R.dimen.tball_header_paddingTop) : mPaddingTop;
+                mPaddingBottom = mPaddingBottom == 0 ? (int) getResources().getDimension(R.dimen.tball_header_paddingBottom) : mPaddingBottom;
                 thisView.setPadding(paddingLeft, mPaddingTop, paddingRight, mPaddingBottom);
             }
             final ViewGroup thisGroup = this;
@@ -124,7 +124,10 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         progressView.setVisibility(VISIBLE);
         Drawable drawable = mProgressView.getDrawable();
         if ((drawable instanceof Animatable)) {
-            ((Animatable) drawable).start();
+            Animatable animatable = (Animatable) drawable;
+            if (!animatable.isRunning()){
+                ((Animatable) drawable).start();
+            }
         } else {
             //progressView.animate().rotation(36000).setDuration(100000);
         }
@@ -216,6 +219,12 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         return self();
     }
 
+    public T setCanvasColorId(@ColorRes int colorId){
+        final View thisView = this;
+        setCanvasColor(ContextCompat.getColor(thisView.getContext(), colorId));
+        return self();
+    }
+
     public T setPrimaryColor(@ColorInt int primaryColor) {
         mSetPrimaryColor = true;
         mPrimaryColor = primaryColor;
@@ -230,6 +239,14 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         mTitleView.setTextColor(accentColor);
         if (mProgressDrawable != null) {
             mProgressDrawable.setColor(accentColor);
+            mProgressView.invalidateDrawable(mProgressDrawable);
+        }
+        return self();
+    }
+
+    public T setCanvasColor(@ColorInt int canvasColor) {
+        if (mProgressDrawable != null) {
+            mProgressDrawable.setCanvasColor(canvasColor);
             mProgressView.invalidateDrawable(mProgressDrawable);
         }
         return self();

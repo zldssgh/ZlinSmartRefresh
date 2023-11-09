@@ -115,6 +115,9 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         if (ta.hasValue(R.styleable.ThreeBallHeader_tballAccentColor)) {
             super.setAccentColor(ta.getColor(R.styleable.ThreeBallHeader_tballAccentColor, 0));
         }
+        if (ta.hasValue(R.styleable.ThreeBallHeader_tballCanvasColor)){
+            super.setCanvasColor(ta.getColor(R.styleable.ThreeBallHeader_tballCanvasColor, 0));
+        }
         if(ta.hasValue(R.styleable.ThreeBallHeader_tballTextPulling)){
             mTextPulling = ta.getString(R.styleable.ThreeBallHeader_tballTextPulling);
         } else {

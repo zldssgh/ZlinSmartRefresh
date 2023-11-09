@@ -8,6 +8,7 @@
         <attr name="tballPrimaryColor" format="color"/>
         <attr name="tballAccentColor" format="color"/>
 
+        <attr name="tballCanvasColor" format="color"/>
         <attr name="tballBallRadius" format="dimension"/>
         <attr name="tballBallHgap" format="dimension"/>
         <attr name="tballBallVgap" format="dimension"/>
