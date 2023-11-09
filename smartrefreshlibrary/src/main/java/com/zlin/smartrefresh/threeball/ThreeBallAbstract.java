@@ -2,10 +2,13 @@ package com.zlin.smartrefresh.threeball;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +22,8 @@ import com.scwang.smart.refresh.layout.simple.SimpleComponent;
 import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
 import com.zlin.smartrefresh.drawable.PaintDrawable;
+import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -100,9 +105,9 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         final View progressView = mProgressView;
         progressView.animate().cancel();
         final Drawable drawable = mProgressView.getDrawable();
-        if (drawable instanceof Animatable) {
-            if (((Animatable) drawable).isRunning()) {
-                ((Animatable) drawable).stop();
+        if (drawable instanceof ThreeBallDrawable) {
+            if (((ThreeBallDrawable) drawable).isRunning()) {
+                ((ThreeBallDrawable) drawable).closeTask();
             }
         }
     }
@@ -116,14 +121,12 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     @Override
     public void onStartAnimator(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
         final View progressView = mProgressView;
-        if (progressView.getVisibility() != VISIBLE) {
-            progressView.setVisibility(VISIBLE);
-            Drawable drawable = mProgressView.getDrawable();
-            if ((drawable instanceof Animatable)) {
-                ((Animatable) drawable).start();
-            } else {
-                progressView.animate().rotation(36000).setDuration(100000);
-            }
+        progressView.setVisibility(VISIBLE);
+        Drawable drawable = mProgressView.getDrawable();
+        if ((drawable instanceof Animatable)) {
+            ((Animatable) drawable).start();
+        } else {
+            //progressView.animate().rotation(36000).setDuration(100000);
         }
     }
 
@@ -131,6 +134,8 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
         if (newState==RefreshState.PullDownToRefresh){
             onStartAnimator(refreshLayout, 0, 0);
+        }else if (newState==RefreshState.None){
+            onStopAnimator();
         }
     }
 
@@ -141,17 +146,6 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
 
     @Override
     public int onFinish(@NonNull RefreshLayout refreshLayout, boolean success) {
-        final View progressView = mProgressView;
-        Drawable drawable = mProgressView.getDrawable();
-        if (drawable instanceof Animatable) {
-            Animatable animatable = (Animatable) drawable;
-            if ((animatable).isRunning()) {
-                animatable.stop();
-            }
-        } else {
-            progressView.animate().rotation(0).setDuration(0);
-        }
-        progressView.setVisibility(INVISIBLE);
         return mFinishDuration;//延迟500毫秒之后再弹回
     }
 
@@ -170,6 +164,29 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
                 mSetAccentColor = false;
             }
         }
+    }
+
+    /**
+     * 停止动画
+     */
+    private void onStopAnimator(){
+        final View progressView = mProgressView;
+        Drawable drawable = mProgressView.getDrawable();
+        if (drawable instanceof Animatable) {
+            Animatable animatable = (Animatable) drawable;
+            if ((animatable).isRunning()) {
+                animatable.stop();
+            }
+        } else {
+            //progressView.animate().rotation(0).setDuration(0);
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        Log.e("onSizeChanged","w/h="+w+"/"+h+"   oldw/oldh="+oldw+"/"+oldh);
     }
 
     @SuppressWarnings("unchecked")
@@ -218,27 +235,44 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         return self();
     }
 
-    public T setBallRadius(float ballRadius){
+    public T setBallRadiusDp(float dpBallRadius){
+        return setBallRadiusPx(SmartUtil.dp2px(dpBallRadius));
+    }
+
+    public T setBallRadiusPx(float pxBallRadius){
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallRadius(ballRadius);
+            mProgressDrawable.setBallRadius(pxBallRadius);
             mProgressView.invalidateDrawable(mProgressDrawable);
         }
+
+
         return self();
     }
 
-    public T setBallHgap(float ballHgap){
+    public T setBallHgapDp(float pxBallHgap){
+        return setBallHgapPx(SmartUtil.dp2px(pxBallHgap));
+    }
+
+    public T setBallHgapPx(float pxBallHgap){
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallHgap(ballHgap);
+            mProgressDrawable.setBallHgap(pxBallHgap);
             mProgressView.invalidateDrawable(mProgressDrawable);
         }
+
+
         return self();
     }
 
-    public T setBallVgap(float ballVgap){
+    public T setBallVgapDp(float pxBallVgap){
+        return setBallVgapPx(SmartUtil.dp2px(pxBallVgap));
+    }
+
+    public T setBallVgapPx(float pxBallVgap){
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallVgap(ballVgap);
+            mProgressDrawable.setBallVgap(pxBallVgap);
             mProgressView.invalidateDrawable(mProgressDrawable);
         }
+
         return self();
     }
 
@@ -261,11 +295,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     }
 
     public T setDrawableProgressSizeDp(float dpWidth, float dpHeight) {
-        ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
-        lpProgressView.width = SmartUtil.dp2px(dpWidth);
-        lpProgressView.height = SmartUtil.dp2px(dpHeight);
-        mProgressView.setLayoutParams(lpProgressView);
-        return self();
+        return setDrawableProgressSizePx(SmartUtil.dp2px(dpWidth),  SmartUtil.dp2px(dpHeight));
     }
 
     public T setDrawableProgressSizePx(float pxWidth, float pxHeight) {
@@ -276,11 +306,8 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         return self();
     }
 
-    public T setTextTitleMarginTop(float dpTop) {
-        MarginLayoutParams lpTitleView = (MarginLayoutParams) mTitleView.getLayoutParams();
-        lpTitleView.topMargin = SmartUtil.dp2px(dpTop);
-        mTitleView.setLayoutParams(lpTitleView);
-        return self();
+    public T setTextTitleMarginTopDp(float dpTop) {
+        return setTextTitleMarginTopPx(SmartUtil.dp2px(dpTop));
     }
 
     public T setTextTitleMarginTopPx(int pxTop) {
@@ -290,16 +317,24 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
         return self();
     }
 
-    public T setTextTitleSize(float size) {
-        mTitleView.setTextSize(size);
+    public T setTextTitleSizeSp(float spTextSize) {
+        return setTextTitleSize(TypedValue.COMPLEX_UNIT_SP, spTextSize);
+    }
+
+    public T setTextTitleSize(int unit, float size) {
+        mTitleView.setTextSize(unit, size);
         if (mRefreshKernel != null) {
             mRefreshKernel.requestRemeasureHeightFor(this);
         }
         return self();
     }
 
-    public T setTextTitleSize(int unit, float size) {
-        mTitleView.setTextSize(unit, size);
+    public T setTextBoldEnable(boolean boldEnable){
+        if (boldEnable){
+            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        }else{
+            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        }
         if (mRefreshKernel != null) {
             mRefreshKernel.requestRemeasureHeightFor(this);
         }

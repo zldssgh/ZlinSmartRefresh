@@ -26,9 +26,10 @@
                 app:tballBallRadius="3.9dp"
                 app:tballBallHgap="8dp"
                 app:tballBallVgap="5dp"
-                app:tballTitleMarginTop="3dp"
-                app:tballTitleShowEnable="true"
+                app:tballTitleMarginTop="5dp"
                 app:tballTitleTextSize="12sp"
+                app:tballTitleShowEnable="false"
+                app:tballTitleBoldEnable="true"
                 />
 
             <androidx.recyclerview.widget.RecyclerView

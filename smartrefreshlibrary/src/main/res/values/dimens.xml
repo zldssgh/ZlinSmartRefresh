@@ -7,7 +7,7 @@
     <dimen name="tball_ball_hgap">8dp</dimen>
     <dimen name="tball_ball_vgap">5dp</dimen>
 
-    <dimen name="tball_title_textsize">16sp</dimen>
+    <dimen name="tball_title_textsize">12sp</dimen>
     <dimen name="tball_title_margintop">5dp</dimen>
 
 </resources>

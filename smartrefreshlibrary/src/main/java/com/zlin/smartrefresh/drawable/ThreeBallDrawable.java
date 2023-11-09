@@ -1,5 +1,6 @@
 package com.zlin.smartrefresh.drawable;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Path;
@@ -10,16 +11,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import androidx.annotation.NonNull;
-import com.zlin.smartrefresh.api.config.BallInfoConfig;
+import com.zlin.smartrefresh.utils.RandomUtils;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class ThreeBallDrawable extends PaintDrawable implements Animatable , ValueAnimator.AnimatorUpdateListener{
+    private String TAG="ThreeBallDrawable";
 
     protected int mProgressDegree = 0;
     private ValueAnimator mValueAnimator;
@@ -32,62 +32,39 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 
     private ArrayList<Integer> listRandom=new ArrayList<>();
 
+    private boolean isOld=false;
+
     public ThreeBallDrawable() {
-//        mValueAnimator = ValueAnimator.ofInt(30, 3600);
-//        mValueAnimator.setDuration(90000);
-//        mValueAnimator.setInterpolator(null);
-//        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-//        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
-
-        scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        if (isOld){
+            mValueAnimator = ValueAnimator.ofInt(1, 8);
+            mValueAnimator.setDuration(30*60*1000);
+            mValueAnimator.setInterpolator(null);
+            mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
+            mValueAnimator.setRepeatCount(-1);
+        }else{
+            scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        }
     }
-
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         int value = (int) animation.getAnimatedValue();
-        Log.e("Animation1","value="+value);
+        Log.e(TAG,"value="+value);
+
         mProgressDegree = 30 * (value / 30);
+
         final Drawable drawable = ThreeBallDrawable.this;
         drawable.invalidateSelf();
     }
 
-
-    private  void randomNumberGenerator () {
-        listRandom.clear();
-
-        int n = 3; // 需要生成的不重复随机数的数量
-        int maxNumber = 3; // 随机数的上限
-
-        Random random = new Random();
-        for (int i = 0; i < n; i++) {
-            int randomNumber = random.nextInt(maxNumber);
-            while (listRandom.contains(randomNumber)) {
-                randomNumber = random.nextInt(maxNumber);
-            }
-            listRandom.add(randomNumber);
-        }
-    }
-
-    private float randomInt(float sFloat, float eFloat){
-        int min_val = (int) sFloat;
-        int max_val = (int) eFloat;
-//        SecureRandom rand = new SecureRandom();
-//        rand.setSeed(new Date().getTime());
-//        int randomNum = rand.nextInt((max_val - min_val) + 1) + min_val;
-
-        ThreadLocalRandom tlr = ThreadLocalRandom.current();
-        int randomNum = tlr.nextInt(min_val, max_val );
-        return randomNum;
-    }
-
     @Override
     public void draw(@NonNull Canvas canvas) {
-        //canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.BLACK);
+
         final Drawable drawable = ThreeBallDrawable.this;
         final Rect bounds = drawable.getBounds();
         //bounds.width();
-        //bounds.height()*2/3;
+        //bounds.height()
 
         final float sFloat= mBallRadius;
         final float mFload= mDrawableHeight /2;
@@ -97,9 +74,9 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         list.add(mFload);
         list.add(eFloat);
 
-         float value1=randomInt(sFloat,eFloat);
-         float value2=randomInt(sFloat,eFloat);
-         float value3=randomInt(sFloat,eFloat);
+         float value1= RandomUtils.randomInt(sFloat,eFloat);
+         float value2= RandomUtils.randomInt(sFloat,eFloat);
+         float value3= RandomUtils.randomInt(sFloat,eFloat);
         Log.e("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+value1+"/"+value2+"/"+value3+"---");
 
 
@@ -109,8 +86,8 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 //        float value3=list.get(listRandom.get(2));
 //        Log.e("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+listRandom.get(0)+"/"+listRandom.get(1)+"/"+listRandom.get(2)+"---");
 
-        Log.e("Animation2","scheduledExecutorService="+scheduledExecutorService);
-        Log.e("Animation2","scheduledFuture="+scheduledFuture);
+        Log.e("Animation3","scheduledExecutorService="+scheduledExecutorService);
+        Log.e("Animation3","scheduledFuture="+scheduledFuture);
 
         mPath.reset();
         mPath.addCircle(mBallRadius, value1, mBallRadius, Path.Direction.CW);
@@ -121,45 +98,83 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
         canvas.drawPath(mPath, mPaint);
         //canvas.restore();
     }
-    //</editor-fold>
 
     @Override
     public void start() {
-//        if (!mValueAnimator.isRunning()) {
-//            mValueAnimator.addUpdateListener(this);
-//            mValueAnimator.start();
-//        }
-
-        scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                invalidateSelf();
+        if (isOld){
+            if (!mValueAnimator.isRunning()) {
+                mValueAnimator.addUpdateListener(this);
+                mValueAnimator.start();
+           }
+        }else{
+            if (scheduledExecutorService==null){
+                scheduledExecutorService = Executors.newScheduledThreadPool(1);
             }
-        }, 0, 200, TimeUnit.MILLISECONDS);
+            scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("Animation4","执行55555555555555555555555555555555555555555555555555555555555");
+                    invalidateSelf();
+                }
+            }, 0, 200, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
     public void stop() {
-//        if (mValueAnimator.isRunning()) {
-//            Animator animator = mValueAnimator;
-//            animator.removeAllListeners();
-//            mValueAnimator.removeAllUpdateListeners();
-//            mValueAnimator.cancel();
-//        }
+        if (isOld){
+            if (mValueAnimator.isRunning()) {
+                Animator animator = mValueAnimator;
+                animator.removeAllListeners();
+                mValueAnimator.removeAllUpdateListeners();
+                mValueAnimator.cancel();
+           }
+        }else{
+            Log.e("Animation4","正在停止");
+            try{
+                if (scheduledFuture!=null && !scheduledFuture.isCancelled()){
+                    Log.e("Animation4","执行001");
+                    scheduledFuture.cancel(true);
+                    Log.e("Animation4","执行002");
+                    scheduledFuture=null;
+                    Log.e("Animation4","执行003");
+                }
 
-        try{
-            if (scheduledFuture!=null){
-                scheduledFuture.cancel(true);
+                if (scheduledExecutorService!=null && !scheduledExecutorService.isShutdown()){
+                    Log.e("Animation4","执行201");
+                    scheduledExecutorService.shutdownNow();
+                    Log.e("Animation4","执行202");
+                }
+
+                Log.e("Animation4","执行301");
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.e("Animation4","错误:"+e.getMessage());
+            }finally {
+                scheduledExecutorService=null;
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
     @Override
     public boolean isRunning() {
-        //return mValueAnimator.isRunning();
-        return scheduledExecutorService.isShutdown()==false;
+        if (isOld){
+            return mValueAnimator.isRunning();
+        }else{
+            return scheduledFuture!=null && !scheduledFuture.isCancelled();
+        }
+    }
+
+    public void closeTask(){
+        try{
+            stop();
+
+            if (scheduledExecutorService!=null && !scheduledExecutorService.isShutdown()){
+                scheduledExecutorService.shutdownNow();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

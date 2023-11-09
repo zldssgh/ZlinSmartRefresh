@@ -3,6 +3,7 @@ package com.zlin.smartrefresh.api.header;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -16,10 +17,9 @@ import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
-import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
-import com.zlin.smartrefresh.api.config.BallInfoConfig;
-import com.zlin.smartrefresh.api.utils.BallUtils;
+import com.zlin.smartrefresh.config.BallInfoConfig;
+import com.zlin.smartrefresh.utils.BallUtils;
 import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
 import com.zlin.smartrefresh.threeball.ThreeBallAbstract;
 import java.util.List;
@@ -39,6 +39,7 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
     protected String mTextFinish;//"刷新完成";
     protected String mTextFailed;//"刷新失败";
 
+    protected boolean mTitleBoldEnable=false;//标题粗体使能
     protected boolean mTitleShowEnable=true;//标题显示使能
     protected float mBallRadius =0f;//球体半径
     protected float mBallHgap =0f;//球体水平间距
@@ -64,37 +65,45 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         mProgressDrawable = new ThreeBallDrawable();
         mProgressView.setImageDrawable(mProgressDrawable);
 
-        mBallRadius = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallRadius, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_ball_radius)));
-        mBallHgap = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallHgap, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_ball_hgap)));
-        mBallVgap = ta.getLayoutDimension(R.styleable.ThreeBallHeader_tballBallVgap, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_ball_hgap)));
+        mBallRadius = ta.getDimension(R.styleable.ThreeBallHeader_tballBallRadius, getResources().getDimensionPixelSize(R.dimen.tball_ball_radius));
+        mBallHgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallHgap, getResources().getDimensionPixelSize(R.dimen.tball_ball_hgap));
+        mBallVgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallVgap, getResources().getDimensionPixelSize(R.dimen.tball_ball_vgap));
 
-        super.setBallRadius(mBallRadius);
-        super.setBallHgap(mBallHgap);
-        super.setBallVgap(mBallVgap);
+        super.setBallRadiusPx(mBallRadius);
+        super.setBallHgapPx(mBallHgap);
+        super.setBallVgapPx(mBallVgap);
 
         BallInfoConfig ballInfoConfig=new BallInfoConfig();
         ballInfoConfig.setBallRadius(mBallRadius);
         ballInfoConfig.setBallHgap(mBallHgap);
         ballInfoConfig.setBallVgap(mBallVgap);
+
         float[] mDrawableSize= BallUtils.getDrawableSize(ballInfoConfig);
         ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
         lpProgressView.width = (int) mDrawableSize[0];
         lpProgressView.height = (int) mDrawableSize[1];
         mProgressView.setLayoutParams(lpProgressView);
 
-        int titleMarginTop = ta.getDimensionPixelSize(R.styleable.ThreeBallHeader_tballTitleMarginTop, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_title_margintop)));
+        float titleMarginTop = ta.getDimension(R.styleable.ThreeBallHeader_tballTitleMarginTop, getResources().getDimension(R.dimen.tball_title_margintop));
         MarginLayoutParams lpTitleView = (MarginLayoutParams) mTitleView.getLayoutParams();
-        lpTitleView.topMargin = titleMarginTop;
+        lpTitleView.topMargin =(int) titleMarginTop;
         mTitleView.setLayoutParams(lpTitleView);
 
         mSpinnerStyle = SpinnerStyle.values[ta.getInt(R.styleable.ThreeBallHeader_tballSpinnerStyle, mSpinnerStyle.ordinal)];
         mFinishDuration = ta.getInt(R.styleable.ThreeBallHeader_tballFinishDuration, mFinishDuration);
 
-        float titleTextSize=ta.getDimensionPixelSize(R.styleable.ThreeBallHeader_tballTitleTextSize, SmartUtil.dp2px(getResources().getDimension(R.dimen.tball_title_textsize)));
+        float titleTextSize=ta.getDimension(R.styleable.ThreeBallHeader_tballTitleTextSize, getResources().getDimension(R.dimen.tball_title_textsize));
         mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
 
-        mTitleShowEnable=ta.getBoolean(R.styleable.ThreeBallHeader_tballTitleShowEnable, mTitleShowEnable);
-        if (mTitleShowEnable){
+        boolean titleBoldEnable=ta.getBoolean(R.styleable.ThreeBallHeader_tballTitleBoldEnable, mTitleBoldEnable);
+        if (titleBoldEnable){
+            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        }else{
+            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        }
+
+        boolean titleShowEnable=ta.getBoolean(R.styleable.ThreeBallHeader_tballTitleShowEnable, mTitleShowEnable);
+        if (titleShowEnable){
             mTitleView.setVisibility(View.VISIBLE);
         }else{
             mTitleView.setVisibility(View.GONE);

@@ -1,6 +1,6 @@
-package com.zlin.smartrefresh.api.utils;
+package com.zlin.smartrefresh.utils;
 
-import com.zlin.smartrefresh.api.config.BallInfoConfig;
+import com.zlin.smartrefresh.config.BallInfoConfig;
 
 public class BallUtils {
 

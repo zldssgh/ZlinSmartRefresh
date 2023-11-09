@@ -52,6 +52,7 @@ dependencies {
 
     //刷新
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.3'
+    implementation  'com.scwang.smart:refresh-header-classics:2.0.3'
     implementation  'com.scwang.smart:refresh-footer-classics:2.0.3'
 
     //adapter适配器
