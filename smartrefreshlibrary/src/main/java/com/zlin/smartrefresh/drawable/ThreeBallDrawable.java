@@ -9,9 +9,9 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.zlin.smartrefresh.utils.RandomUtils;
+import com.zlin.smartrefresh.utils.SelfLogUtils;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,7 +49,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         int value = (int) animation.getAnimatedValue();
-        Log.e(TAG,"value="+value);
+        SelfLogUtils.log(TAG,"value="+value);
 
         mProgressDegree = 30 * (value / 30);
 
@@ -79,17 +79,17 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
          float value1= RandomUtils.randomInt(sFloat,eFloat);
          float value2= RandomUtils.randomInt(sFloat,eFloat);
          float value3= RandomUtils.randomInt(sFloat,eFloat);
-        Log.e("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+value1+"/"+value2+"/"+value3+"---");
+        SelfLogUtils.log("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+value1+"/"+value2+"/"+value3+"---");
 
 
 //        randomNumberGenerator();
 //        float value1=list.get(listRandom.get(0));
 //        float value2=list.get(listRandom.get(1));
 //        float value3=list.get(listRandom.get(2));
-//        Log.e("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+listRandom.get(0)+"/"+listRandom.get(1)+"/"+listRandom.get(2)+"---");
+//        SelfLogUtils.log("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+listRandom.get(0)+"/"+listRandom.get(1)+"/"+listRandom.get(2)+"---");
 
-        Log.e("Animation3","scheduledExecutorService="+scheduledExecutorService);
-        Log.e("Animation3","scheduledFuture="+scheduledFuture);
+        SelfLogUtils.log("Animation3","scheduledExecutorService="+scheduledExecutorService);
+        SelfLogUtils.log("Animation3","scheduledFuture="+scheduledFuture);
 
         mPath.reset();
         mPath.addCircle(mBallRadius, value1, mBallRadius, Path.Direction.CW);
@@ -109,7 +109,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
                 mValueAnimator.start();
            }
         }else{
-            Log.e("Animation5","打开动画1111111111111111111111111111111111111111111");
+            SelfLogUtils.log("Animation5","打开动画1111111111111111111111111111111111111111111");
 
             if (scheduledExecutorService==null){
                 scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -117,7 +117,7 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
             scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("Animation4","执行55555555555555555555555555555555555555555555555555555555555");
+                    SelfLogUtils.log("Animation4","执行55555555555555555555555555555555555555555555555555555555555");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -140,26 +140,26 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
                 mValueAnimator.cancel();
            }
         }else{
-            Log.e("Animation5","关闭动画2222222222222222222222222222222222222");
+            SelfLogUtils.log("Animation5","关闭动画2222222222222222222222222222222222222");
             try{
                 if (scheduledFuture!=null && !scheduledFuture.isCancelled()){
-                    Log.e("Animation4","执行001");
+                    SelfLogUtils.log("Animation4","执行001");
                     scheduledFuture.cancel(true);
-                    Log.e("Animation4","执行002");
+                    SelfLogUtils.log("Animation4","执行002");
                     scheduledFuture=null;
-                    Log.e("Animation4","执行003");
+                    SelfLogUtils.log("Animation4","执行003");
                 }
 
                 if (scheduledExecutorService!=null && !scheduledExecutorService.isShutdown()){
-                    Log.e("Animation4","执行201");
+                    SelfLogUtils.log("Animation4","执行201");
                     scheduledExecutorService.shutdownNow();
-                    Log.e("Animation4","执行202");
+                    SelfLogUtils.log("Animation4","执行202");
                 }
 
-                Log.e("Animation4","执行301");
+                SelfLogUtils.log("Animation4","执行301");
             }catch (Exception e){
                 e.printStackTrace();
-                Log.e("Animation4","错误:"+e.getMessage());
+                SelfLogUtils.log("Animation4","错误:"+e.getMessage());
             }finally {
                 scheduledExecutorService=null;
             }

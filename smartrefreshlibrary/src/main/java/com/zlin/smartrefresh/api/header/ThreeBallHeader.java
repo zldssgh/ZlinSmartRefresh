@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,10 @@ import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.zlin.smartrefresh.R;
 import com.zlin.smartrefresh.config.BallInfoConfig;
-import com.zlin.smartrefresh.utils.BallUtils;
+import com.zlin.smartrefresh.utils.DrawableUtils;
 import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
 import com.zlin.smartrefresh.threeball.ThreeBallAbstract;
+import com.zlin.smartrefresh.utils.SelfLogUtils;
 import java.util.List;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -53,7 +53,7 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         super(context, attrs, 0);
 
         //加载布局
-        View.inflate(context, R.layout.smartrefresh_layout_header_threeball, this);
+        View.inflate(context, R.layout.smartrefresh_layout_header_three_ball, this);
 
         //获取控件
         final View thisView = this;
@@ -78,7 +78,7 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
         ballInfoConfig.setBallHgap(mBallHgap);
         ballInfoConfig.setBallVgap(mBallVgap);
 
-        float[] mDrawableSize= BallUtils.getDrawableSize(ballInfoConfig);
+        float[] mDrawableSize= DrawableUtils.getDrawableSize(ballInfoConfig);
         ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
         lpProgressView.width = (int) mDrawableSize[0];
         lpProgressView.height = (int) mDrawableSize[1];
@@ -183,7 +183,7 @@ public class ThreeBallHeader extends ThreeBallAbstract<ThreeBallHeader> implemen
 
     @Override
     public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
-        Log.e("onStateChanged","oldState="+oldState+"  newState="+newState);
+        SelfLogUtils.log("onStateChanged","oldState="+oldState+"  newState="+newState);
 
         super.onStateChanged(refreshLayout, oldState, newState);
         switch (newState) {

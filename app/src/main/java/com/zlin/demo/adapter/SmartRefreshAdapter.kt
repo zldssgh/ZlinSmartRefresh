@@ -9,7 +9,9 @@ class SmartRefreshAdapter constructor(data:ArrayList<SmartRefreshLayoutItem>) : 
 
     override fun convert(holder: BaseViewHolder, item: SmartRefreshLayoutItem) {
         with(item){
-            holder.setText(R.id.tv_item_name,"${item.name}")
+            holder.setText(R.id.tv_title,"${item.name}")
+            holder.setText(R.id.tv_describe,"${context.resources.getString(item.nameId)}")
+            holder.setTextColorRes(R.id.tv_describe, R.color.item_describe_color)
         }
     }
 

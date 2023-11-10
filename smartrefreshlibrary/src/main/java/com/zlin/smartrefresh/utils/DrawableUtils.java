@@ -2,7 +2,7 @@ package com.zlin.smartrefresh.utils;
 
 import com.zlin.smartrefresh.config.BallInfoConfig;
 
-public class BallUtils {
+public class DrawableUtils {
 
     public static float[] getDrawableSize(BallInfoConfig ballInfoConfig){
         float mBallRadius=ballInfoConfig.getBallRadius();

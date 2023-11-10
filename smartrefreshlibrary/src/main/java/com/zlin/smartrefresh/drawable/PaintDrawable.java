@@ -5,11 +5,16 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import com.zlin.smartrefresh.config.BallInfoConfig;
+import com.zlin.smartrefresh.utils.DrawableUtils;
+
 public abstract class PaintDrawable extends Drawable {
 
     protected Paint mPaint = new Paint();
 
     protected int mCanvasColor=-1;
+
+    protected BallInfoConfig ballInfoConfig=new BallInfoConfig();
 
     protected float mBallRadius =0f;
     protected float mBallHgap =0f;
@@ -64,8 +69,14 @@ public abstract class PaintDrawable extends Drawable {
     }
 
     private void updateDrawableSize(){
-        mDrawableWidth=3*(2*mBallRadius)+2*mBallHgap;
-        mDrawableHeight=2*mBallRadius+mBallVgap;
+        ballInfoConfig.setBallRadius(mBallRadius);
+        ballInfoConfig.setBallHgap(mBallHgap);
+        ballInfoConfig.setBallVgap(mBallVgap);
+
+        float[] mDrawableSize= DrawableUtils.getDrawableSize(ballInfoConfig);
+
+        mDrawableWidth=mDrawableSize[0];
+        mDrawableHeight=mDrawableSize[1];
     }
 
 }

@@ -7,7 +7,6 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.scwang.smart.refresh.layout.util.SmartUtil;
 import com.zlin.smartrefresh.R;
 import com.zlin.smartrefresh.drawable.PaintDrawable;
 import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
-
+import com.zlin.smartrefresh.utils.SelfLogUtils;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -189,7 +188,7 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        Log.e("onSizeChanged","w/h="+w+"/"+h+"   oldw/oldh="+oldw+"/"+oldh);
+        SelfLogUtils.log("onSizeChanged","w/h="+w+"/"+h+"   oldw/oldh="+oldw+"/"+oldh);
     }
 
     @SuppressWarnings("unchecked")
