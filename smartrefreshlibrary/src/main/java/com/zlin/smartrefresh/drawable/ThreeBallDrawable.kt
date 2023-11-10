@@ -1,85 +1,72 @@
-package com.zlin.smartrefresh.drawable;
+package com.zlin.smartrefresh.drawable
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.NonNull;
-import com.zlin.smartrefresh.utils.RandomUtils;
-import com.zlin.smartrefresh.utils.SelfLogUtils;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import android.animation.Animator
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.graphics.Canvas
+import android.graphics.Path
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
+import com.zlin.smartrefresh.utils.RandomUtils.randomInt
+import com.zlin.smartrefresh.utils.SelfLogUtils.log
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
-public class ThreeBallDrawable extends PaintDrawable implements Animatable , ValueAnimator.AnimatorUpdateListener{
-    private String TAG="ThreeBallDrawable";
+class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
+    private val TAG = "ThreeBallDrawable"
 
-    protected int mProgressDegree = 0;
-    private ValueAnimator mValueAnimator;
-    protected Path mPath = new Path();
+    protected var mProgressDegree = 0
+    private var mValueAnimator: ValueAnimator? = null
+    protected var mPath = Path()
+    private var scheduledExecutorService: ScheduledExecutorService? = null
+    private var scheduledFuture: ScheduledFuture<*>? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val listRandom = ArrayList<Int>()
+    private val isOld = false
 
-    private ScheduledExecutorService scheduledExecutorService;
-    private ScheduledFuture<?> scheduledFuture;
-
-    private Handler handler=new Handler(Looper.getMainLooper());
-
-    private ArrayList<Integer> listRandom=new ArrayList<>();
-
-    private boolean isOld=false;
-
-    public ThreeBallDrawable() {
-        if (isOld){
-            mValueAnimator = ValueAnimator.ofInt(1, 8);
-            mValueAnimator.setDuration(30*60*1000);
-            mValueAnimator.setInterpolator(null);
-            mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
-            mValueAnimator.setRepeatCount(-1);
-        }else{
-            scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    init {
+        if (isOld) {
+            mValueAnimator = ValueAnimator.ofInt(1, 8)
+            mValueAnimator?.duration = (30 * 60 * 1000).toLong()
+            mValueAnimator?.interpolator = null
+            mValueAnimator?.repeatMode = ValueAnimator.RESTART
+            mValueAnimator?.repeatCount = -1
+        } else {
+            scheduledExecutorService = Executors.newScheduledThreadPool(1)
         }
     }
 
-    @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
-        int value = (int) animation.getAnimatedValue();
-        SelfLogUtils.log(TAG,"value="+value);
-
-        mProgressDegree = 30 * (value / 30);
-
-        final Drawable drawable = ThreeBallDrawable.this;
-        drawable.invalidateSelf();
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        val value = animation.animatedValue as Int
+        log(TAG, "value=$value")
+        mProgressDegree = 30 * (value / 30)
+        val drawable: Drawable = this@ThreeBallDrawable
+        drawable.invalidateSelf()
     }
 
-    @Override
-    public void draw(@NonNull Canvas canvas) {
-        if (mCanvasColor!=-1){
-            canvas.drawColor(mCanvasColor);
+    override fun draw(canvas: Canvas) {
+        if (mCanvasColor != -1) {
+            canvas.drawColor(mCanvasColor)
         }
-
-        final Drawable drawable = ThreeBallDrawable.this;
-        final Rect bounds = drawable.getBounds();
+        val drawable: Drawable = this@ThreeBallDrawable
+        val bounds = drawable.bounds
         //bounds.width();
         //bounds.height()
-
-        final float sFloat= mBallRadius;
-        final float mFload= mDrawableHeight /2;
-        final float eFloat=(mDrawableHeight - mBallRadius);
-        final ArrayList<Float> list=new ArrayList<>();
-        list.add(sFloat);
-        list.add(mFload);
-        list.add(eFloat);
-
-         float value1= RandomUtils.randomInt(sFloat,eFloat);
-         float value2= RandomUtils.randomInt(sFloat,eFloat);
-         float value3= RandomUtils.randomInt(sFloat,eFloat);
-        SelfLogUtils.log("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+value1+"/"+value2+"/"+value3+"---");
+        val sFloat = mBallRadius
+        val mFload = mDrawableHeight / 2
+        val eFloat = mDrawableHeight - mBallRadius
+        val list = ArrayList<Float>()
+        list.add(sFloat)
+        list.add(mFload)
+        list.add(eFloat)
+        val value1 = randomInt(sFloat, eFloat)
+        val value2 = randomInt(sFloat, eFloat)
+        val value3 = randomInt(sFloat, eFloat)
+        log("Animation2", "中心点范围=$sFloat-$eFloat>>>$value1/$value2/$value3---")
 
 
 //        randomNumberGenerator();
@@ -87,104 +74,85 @@ public class ThreeBallDrawable extends PaintDrawable implements Animatable , Val
 //        float value2=list.get(listRandom.get(1));
 //        float value3=list.get(listRandom.get(2));
 //        SelfLogUtils.log("Animation2","中心点范围="+sFloat+"-"+eFloat+">>>"+listRandom.get(0)+"/"+listRandom.get(1)+"/"+listRandom.get(2)+"---");
-
-        SelfLogUtils.log("Animation3","scheduledExecutorService="+scheduledExecutorService);
-        SelfLogUtils.log("Animation3","scheduledFuture="+scheduledFuture);
-
-        mPath.reset();
-        mPath.addCircle(mBallRadius, value1, mBallRadius, Path.Direction.CW);
-        mPath.addCircle(3* mBallRadius + mBallHgap, value2, mBallRadius, Path.Direction.CW);
-        mPath.addCircle(5* mBallRadius +2* mBallHgap, value3, mBallRadius, Path.Direction.CW);
+        log("Animation3", "scheduledExecutorService=$scheduledExecutorService")
+        log("Animation3", "scheduledFuture=$scheduledFuture")
+        mPath.reset()
+        mPath.addCircle(mBallRadius, value1, mBallRadius, Path.Direction.CW)
+        mPath.addCircle(3 * mBallRadius + mBallHgap, value2, mBallRadius, Path.Direction.CW)
+        mPath.addCircle(5 * mBallRadius + 2 * mBallHgap, value3, mBallRadius, Path.Direction.CW)
 
         //canvas.save();
-        canvas.drawPath(mPath, mPaint);
+        canvas.drawPath(mPath, mPaint)
         //canvas.restore();
     }
 
-    @Override
-    public void start() {
-        if (isOld){
-            if (!mValueAnimator.isRunning()) {
-                mValueAnimator.addUpdateListener(this);
-                mValueAnimator.start();
-           }
-        }else{
-            SelfLogUtils.log("Animation5","打开动画1111111111111111111111111111111111111111111");
-
-            if (scheduledExecutorService==null){
-                scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    override fun start() {
+        if (isOld) {
+            if (!mValueAnimator!!.isRunning) {
+                mValueAnimator!!.addUpdateListener(this)
+                mValueAnimator!!.start()
             }
-            scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    SelfLogUtils.log("Animation4","执行55555555555555555555555555555555555555555555555555555555555");
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            invalidateSelf();
-                        }
-                    });
-
-                }
-            }, 0, 200, TimeUnit.MILLISECONDS);
+        } else {
+            log("Animation5", "打开动画1111111111111111111111111111111111111111111")
+            if (scheduledExecutorService == null) {
+                scheduledExecutorService = Executors.newScheduledThreadPool(1)
+            }
+            scheduledFuture = scheduledExecutorService!!.scheduleWithFixedDelay({
+                log("Animation4", "执行55555555555555555555555555555555555555555555555555555555555")
+                handler.post { invalidateSelf() }
+            }, 0, 200, TimeUnit.MILLISECONDS)
         }
     }
 
-    @Override
-    public void stop() {
-        if (isOld){
-            if (mValueAnimator.isRunning()) {
-                Animator animator = mValueAnimator;
-                animator.removeAllListeners();
-                mValueAnimator.removeAllUpdateListeners();
-                mValueAnimator.cancel();
-           }
-        }else{
-            SelfLogUtils.log("Animation5","关闭动画2222222222222222222222222222222222222");
-            try{
-                if (scheduledFuture!=null && !scheduledFuture.isCancelled()){
-                    SelfLogUtils.log("Animation4","执行001");
-                    scheduledFuture.cancel(true);
-                    SelfLogUtils.log("Animation4","执行002");
-                    scheduledFuture=null;
-                    SelfLogUtils.log("Animation4","执行003");
+    override fun stop() {
+        if (isOld) {
+            if (mValueAnimator?.isRunning==true) {
+                val animator: Animator? = mValueAnimator
+                animator?.removeAllListeners()
+                mValueAnimator?.removeAllUpdateListeners()
+                mValueAnimator?.cancel()
+            }
+        } else {
+            log("Animation5", "关闭动画2222222222222222222222222222222222222")
+            try {
+                if (scheduledFuture != null && scheduledFuture?.isCancelled==false) {
+                    log("Animation4", "执行001")
+                    scheduledFuture!!.cancel(true)
+                    log("Animation4", "执行002")
+                    scheduledFuture = null
+                    log("Animation4", "执行003")
                 }
-
-                if (scheduledExecutorService!=null && !scheduledExecutorService.isShutdown()){
-                    SelfLogUtils.log("Animation4","执行201");
-                    scheduledExecutorService.shutdownNow();
-                    SelfLogUtils.log("Animation4","执行202");
+                if (scheduledExecutorService != null && scheduledExecutorService?.isShutdown==false) {
+                    log("Animation4", "执行201")
+                    scheduledExecutorService!!.shutdownNow()
+                    log("Animation4", "执行202")
                 }
-
-                SelfLogUtils.log("Animation4","执行301");
-            }catch (Exception e){
-                e.printStackTrace();
-                SelfLogUtils.log("Animation4","错误:"+e.getMessage());
-            }finally {
-                scheduledExecutorService=null;
+                log("Animation4", "执行301")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                log("Animation4", "错误:" + e.message)
+            } finally {
+                scheduledExecutorService = null
             }
         }
     }
 
-    @Override
-    public boolean isRunning() {
-        if (isOld){
-            return mValueAnimator.isRunning();
-        }else{
-            return scheduledFuture!=null && !scheduledFuture.isCancelled();
+    override fun isRunning(): Boolean {
+        return if (isOld) {
+            mValueAnimator?.isRunning==true
+        } else {
+            scheduledFuture != null && scheduledFuture?.isCancelled==true
         }
     }
 
-    public void closeTask(){
-        try{
-            stop();
-
-            if (scheduledExecutorService!=null && !scheduledExecutorService.isShutdown()){
-                scheduledExecutorService.shutdownNow();
+    fun closeTask() {
+        try {
+            stop()
+            if (scheduledExecutorService != null && scheduledExecutorService?.isShutdown==false) {
+                scheduledExecutorService?.shutdownNow()
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
-
 }

@@ -1,169 +1,152 @@
-package com.zlin.smartrefresh.threeball;
+package com.zlin.smartrefresh.threeball
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.scwang.smart.refresh.layout.api.RefreshComponent;
-import com.scwang.smart.refresh.layout.api.RefreshKernel;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.constant.RefreshState;
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
-import com.scwang.smart.refresh.layout.simple.SimpleComponent;
-import com.scwang.smart.refresh.layout.util.SmartUtil;
-import com.zlin.smartrefresh.R;
-import com.zlin.smartrefresh.drawable.PaintDrawable;
-import com.zlin.smartrefresh.drawable.ThreeBallDrawable;
-import com.zlin.smartrefresh.utils.SelfLogUtils;
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import static android.view.View.MeasureSpec.EXACTLY;
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Typeface
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import com.scwang.smart.refresh.layout.api.RefreshComponent
+import com.scwang.smart.refresh.layout.api.RefreshKernel
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.constant.RefreshState
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle
+import com.scwang.smart.refresh.layout.simple.SimpleComponent
+import com.scwang.smart.refresh.layout.util.SmartUtil
+import com.zlin.smartrefresh.R
+import com.zlin.smartrefresh.drawable.PaintDrawable
+import com.zlin.smartrefresh.drawable.ThreeBallDrawable
+import com.zlin.smartrefresh.utils.SelfLogUtils.log
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
-public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends SimpleComponent implements RefreshComponent {
+abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : SimpleComponent(context, attrs, defStyleAttr), RefreshComponent {
 
-    public static final int ID_IMAGE_PROGRESS = R.id.srl_tball_progress;
-    public static final int ID_TEXT_TITLE = R.id.srl_tball_title;
+    @JvmField
+    protected var mProgressView: ImageView? = null
+    @JvmField
+    protected var mTitleView: TextView? = null
+    protected var mRefreshKernel: RefreshKernel? = null
+    @JvmField
+    protected var mProgressDrawable: PaintDrawable? = null
+    protected var mSetPrimaryColor = false
+    protected var mSetAccentColor = false
+    protected var mPrimaryColor = 0
+    @JvmField
+    protected var mFinishDuration = 500
+    protected var mPaddingTop = 0
+    protected var mPaddingBottom = 0
+    protected var mMinHeightOfContent = 0
 
-    protected ImageView mProgressView;
-    protected TextView mTitleView;
-
-    protected RefreshKernel mRefreshKernel;
-
-    protected PaintDrawable mProgressDrawable;
-
-    protected boolean mSetPrimaryColor;
-    protected boolean mSetAccentColor;
-
-    protected int mPrimaryColor;
-    protected int mFinishDuration = 500;
-    protected int mPaddingTop = 0;
-    protected int mPaddingBottom = 0;
-    protected int mMinHeightOfContent = 0;
-
-    public ThreeBallAbstract(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-
-        mSpinnerStyle = SpinnerStyle.Translate;
+    init {
+        mSpinnerStyle = SpinnerStyle.Translate
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final View thisView = this;
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val thisView: View = this
         if (mMinHeightOfContent == 0) {
-            mPaddingTop = thisView.getPaddingTop();
-            mPaddingBottom = thisView.getPaddingBottom();
+            mPaddingTop = thisView.paddingTop
+            mPaddingBottom = thisView.paddingBottom
             if (mPaddingTop == 0 || mPaddingBottom == 0) {
-                int paddingLeft = thisView.getPaddingLeft();
-                int paddingRight = thisView.getPaddingRight();
-                mPaddingTop = mPaddingTop == 0 ? (int) getResources().getDimension(R.dimen.tball_header_paddingTop) : mPaddingTop;
-                mPaddingBottom = mPaddingBottom == 0 ? (int) getResources().getDimension(R.dimen.tball_header_paddingBottom) : mPaddingBottom;
-                thisView.setPadding(paddingLeft, mPaddingTop, paddingRight, mPaddingBottom);
+                val paddingLeft = thisView.paddingLeft
+                val paddingRight = thisView.paddingRight
+                mPaddingTop = if (mPaddingTop == 0) resources.getDimension(R.dimen.tball_header_paddingTop).toInt() else mPaddingTop
+                mPaddingBottom = if (mPaddingBottom == 0) resources.getDimension(R.dimen.tball_header_paddingBottom).toInt() else mPaddingBottom
+                thisView.setPadding(paddingLeft, mPaddingTop, paddingRight, mPaddingBottom)
             }
-            final ViewGroup thisGroup = this;
-            thisGroup.setClipToPadding(false);
+            val thisGroup: ViewGroup = this
+            thisGroup.clipToPadding = false
         }
-        if (MeasureSpec.getMode(heightMeasureSpec) == EXACTLY) {
-            final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+            val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
             if (parentHeight < mMinHeightOfContent) {
-                final int padding = (parentHeight - mMinHeightOfContent) / 2;
-                thisView.setPadding(thisView.getPaddingLeft(), padding, thisView.getPaddingRight(), padding);
+                val padding = (parentHeight - mMinHeightOfContent) / 2
+                thisView.setPadding(thisView.paddingLeft, padding, thisView.paddingRight, padding)
             } else {
-                thisView.setPadding(thisView.getPaddingLeft(), 0, thisView.getPaddingRight(), 0);
+                thisView.setPadding(thisView.paddingLeft, 0, thisView.paddingRight, 0)
             }
         } else {
-            thisView.setPadding(thisView.getPaddingLeft(), mPaddingTop, thisView.getPaddingRight(), mPaddingBottom);
+            thisView.setPadding(thisView.paddingLeft, mPaddingTop, thisView.paddingRight, mPaddingBottom)
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         if (mMinHeightOfContent == 0) {
-            final ViewGroup thisGroup = this;
-            for (int i = 0; i < thisGroup.getChildCount(); i++) {
-                final int height = thisGroup.getChildAt(i).getMeasuredHeight();
+            val thisGroup: ViewGroup = this
+            for (i in 0 until thisGroup.childCount) {
+                val height = thisGroup.getChildAt(i).measuredHeight
                 if (mMinHeightOfContent < height) {
-                    mMinHeightOfContent = height;
+                    mMinHeightOfContent = height
                 }
             }
         }
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        final View progressView = mProgressView;
-        progressView.animate().cancel();
-        final Drawable drawable = mProgressView.getDrawable();
-        if (drawable instanceof ThreeBallDrawable) {
-            if (((ThreeBallDrawable) drawable).isRunning()) {
-                ((ThreeBallDrawable) drawable).closeTask();
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        val progressView: View? = mProgressView
+        progressView?.animate()?.cancel()
+        val drawable = mProgressView?.drawable
+        if (drawable is ThreeBallDrawable) {
+            if (drawable.isRunning) {
+                drawable.closeTask()
             }
         }
     }
 
-    @Override
-    public void onInitialized(@NonNull RefreshKernel kernel, int height, int maxDragHeight) {
-        mRefreshKernel = kernel;
-        mRefreshKernel.requestDrawBackgroundFor(this, mPrimaryColor);
+    override fun onInitialized(kernel: RefreshKernel, height: Int, maxDragHeight: Int) {
+        mRefreshKernel = kernel
+        mRefreshKernel?.requestDrawBackgroundFor(this, mPrimaryColor)
     }
 
-    @Override
-    public void onStartAnimator(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
-        final View progressView = mProgressView;
-        progressView.setVisibility(VISIBLE);
-        Drawable drawable = mProgressView.getDrawable();
-        if ((drawable instanceof Animatable)) {
-            Animatable animatable = (Animatable) drawable;
-            if (!animatable.isRunning()){
-                ((Animatable) drawable).start();
+    override fun onStartAnimator(refreshLayout: RefreshLayout, height: Int, maxDragHeight: Int) {
+        val progressView: View? = mProgressView
+        progressView?.visibility = VISIBLE
+        val drawable = mProgressView?.drawable
+        if (drawable is Animatable) {
+            val animatable = drawable as Animatable
+            if (!animatable.isRunning) {
+                (drawable as Animatable).start()
             }
         } else {
             //progressView.animate().rotation(36000).setDuration(100000);
         }
     }
 
-    @Override
-    public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
-        if (newState==RefreshState.PullDownToRefresh){
-            onStartAnimator(refreshLayout, 0, 0);
-        }else if (newState==RefreshState.None){
-            onStopAnimator();
+    override fun onStateChanged(refreshLayout: RefreshLayout, oldState: RefreshState, newState: RefreshState) {
+        if (newState == RefreshState.PullDownToRefresh) {
+            onStartAnimator(refreshLayout, 0, 0)
+        } else if (newState == RefreshState.None) {
+            onStopAnimator()
         }
     }
 
-    @Override
-    public void onReleased(@NonNull RefreshLayout refreshLayout, int height, int maxDragHeight) {
+    override fun onReleased(refreshLayout: RefreshLayout, height: Int, maxDragHeight: Int) {
         //onStartAnimator(refreshLayout, height, maxDragHeight);
     }
 
-    @Override
-    public int onFinish(@NonNull RefreshLayout refreshLayout, boolean success) {
-        return mFinishDuration;//延迟500毫秒之后再弹回
+    override fun onFinish(refreshLayout: RefreshLayout, success: Boolean): Int {
+        return mFinishDuration //延迟500毫秒之后再弹回
     }
 
-    @Override
-    public void setPrimaryColors(@ColorInt int... colors) {
-        if (colors.length > 0) {
-            final View thisView = this;
-            if (!(thisView.getBackground() instanceof BitmapDrawable) && !mSetPrimaryColor) {
-                setPrimaryColor(colors[0]);
-                mSetPrimaryColor = false;
+    override fun setPrimaryColors(@ColorInt vararg colors: Int) {
+        if (colors.isNotEmpty()) {
+            val thisView: View = this
+            if (thisView.background !is BitmapDrawable && !mSetPrimaryColor) {
+                setPrimaryColor(colors[0])
+                mSetPrimaryColor = false
             }
             if (!mSetAccentColor) {
-                if (colors.length > 1) {
-                    setAccentColor(colors[1]);
+                if (colors.size > 1) {
+                    setAccentColor(colors[1])
                 }
-                mSetAccentColor = false;
+                mSetAccentColor = false
             }
         }
     }
@@ -171,203 +154,195 @@ public abstract class ThreeBallAbstract<T extends ThreeBallAbstract> extends Sim
     /**
      * 停止动画
      */
-    private void onStopAnimator(){
-        final View progressView = mProgressView;
-        Drawable drawable = mProgressView.getDrawable();
-        if (drawable instanceof Animatable) {
-            Animatable animatable = (Animatable) drawable;
-            if ((animatable).isRunning()) {
-                animatable.stop();
+    private fun onStopAnimator() {
+        val progressView: View? = mProgressView
+        val drawable = mProgressView?.drawable
+        if (drawable is Animatable) {
+            val animatable = drawable as Animatable
+            if (animatable.isRunning) {
+                animatable.stop()
             }
         } else {
             //progressView.animate().rotation(0).setDuration(0);
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
 
-        SelfLogUtils.log("onSizeChanged","w/h="+w+"/"+h+"   oldw/oldh="+oldw+"/"+oldh);
+        log("onSizeChanged", "w/h=$w/$h   oldw/oldh=$oldw/$oldh")
     }
 
-    @SuppressWarnings("unchecked")
-    protected T self() {
-        return (T) this;
+    private fun self(): T {
+        return this as T
     }
 
-    public T setSpinnerStyle(SpinnerStyle style) {
-        this.mSpinnerStyle = style;
-        return self();
+    fun setSpinnerStyle(style: SpinnerStyle?): T {
+        mSpinnerStyle = style
+        return self()
     }
 
-    public T setFinishDuration(int delay) {
-        mFinishDuration = delay;
-        return self();
+    fun setFinishDuration(delay: Int): T {
+        mFinishDuration = delay
+        return self()
     }
 
-    public T setPrimaryColorId(@ColorRes int colorId) {
-        final View thisView = this;
-        setPrimaryColor(ContextCompat.getColor(thisView.getContext(), colorId));
-        return self();
+    fun setPrimaryColorId(@ColorRes colorId: Int): T {
+        val thisView: View = this
+        setPrimaryColor(ContextCompat.getColor(thisView.context, colorId))
+        return self()
     }
 
-    public T setAccentColorId(@ColorRes int colorId) {
-        final View thisView = this;
-        setAccentColor(ContextCompat.getColor(thisView.getContext(), colorId));
-        return self();
+    fun setAccentColorId(@ColorRes colorId: Int): T {
+        val thisView: View = this
+        setAccentColor(ContextCompat.getColor(thisView.context, colorId))
+        return self()
     }
 
-    public T setCanvasColorId(@ColorRes int colorId){
-        final View thisView = this;
-        setCanvasColor(ContextCompat.getColor(thisView.getContext(), colorId));
-        return self();
+    fun setCanvasColorId(@ColorRes colorId: Int): T {
+        val thisView: View = this
+        setCanvasColor(ContextCompat.getColor(thisView.context, colorId))
+        return self()
     }
 
-    public T setPrimaryColor(@ColorInt int primaryColor) {
-        mSetPrimaryColor = true;
-        mPrimaryColor = primaryColor;
+    fun setPrimaryColor(@ColorInt primaryColor: Int): T {
+        mSetPrimaryColor = true
+        mPrimaryColor = primaryColor
         if (mRefreshKernel != null) {
-            mRefreshKernel.requestDrawBackgroundFor(this, primaryColor);
+            mRefreshKernel?.requestDrawBackgroundFor(this, primaryColor)
         }
-        return self();
+        return self()
     }
 
-    public T setAccentColor(@ColorInt int accentColor) {
-        mSetAccentColor = true;
-        mTitleView.setTextColor(accentColor);
+    fun setAccentColor(@ColorInt accentColor: Int): T {
+        mSetAccentColor = true
+        mTitleView?.setTextColor(accentColor)
         if (mProgressDrawable != null) {
-            mProgressDrawable.setColor(accentColor);
-            mProgressView.invalidateDrawable(mProgressDrawable);
+            mProgressDrawable?.setColor(accentColor)
+            mProgressView?.invalidateDrawable(mProgressDrawable!!)
         }
-        return self();
+        return self()
     }
 
-    public T setCanvasColor(@ColorInt int canvasColor) {
+    fun setCanvasColor(@ColorInt canvasColor: Int): T {
         if (mProgressDrawable != null) {
-            mProgressDrawable.setCanvasColor(canvasColor);
-            mProgressView.invalidateDrawable(mProgressDrawable);
+            mProgressDrawable?.setCanvasColor(canvasColor)
+            mProgressView?.invalidateDrawable(mProgressDrawable!!)
         }
-        return self();
+        return self()
     }
 
-    public T setBallRadiusDp(float dpBallRadius){
-        return setBallRadiusPx(SmartUtil.dp2px(dpBallRadius));
+    fun setBallRadiusDp(dpBallRadius: Float): T {
+        return setBallRadiusPx(SmartUtil.dp2px(dpBallRadius).toFloat())
     }
 
-    public T setBallRadiusPx(float pxBallRadius){
+    fun setBallRadiusPx(pxBallRadius: Float): T {
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallRadius(pxBallRadius);
-            mProgressView.invalidateDrawable(mProgressDrawable);
+            mProgressDrawable?.setBallRadius(pxBallRadius)
+            mProgressView?.invalidateDrawable(mProgressDrawable!!)
         }
-
-
-        return self();
+        return self()
     }
 
-    public T setBallHgapDp(float pxBallHgap){
-        return setBallHgapPx(SmartUtil.dp2px(pxBallHgap));
+    fun setBallHgapDp(pxBallHgap: Float): T {
+        return setBallHgapPx(SmartUtil.dp2px(pxBallHgap).toFloat())
     }
 
-    public T setBallHgapPx(float pxBallHgap){
+    fun setBallHgapPx(pxBallHgap: Float): T {
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallHgap(pxBallHgap);
-            mProgressView.invalidateDrawable(mProgressDrawable);
+            mProgressDrawable?.setBallHgap(pxBallHgap)
+            mProgressView?.invalidateDrawable(mProgressDrawable!!)
         }
-
-
-        return self();
+        return self()
     }
 
-    public T setBallVgapDp(float pxBallVgap){
-        return setBallVgapPx(SmartUtil.dp2px(pxBallVgap));
+    fun setBallVgapDp(pxBallVgap: Float): T {
+        return setBallVgapPx(SmartUtil.dp2px(pxBallVgap).toFloat())
     }
 
-    public T setBallVgapPx(float pxBallVgap){
+    fun setBallVgapPx(pxBallVgap: Float): T {
         if (mProgressDrawable != null) {
-            mProgressDrawable.setBallVgap(pxBallVgap);
-            mProgressView.invalidateDrawable(mProgressDrawable);
+            mProgressDrawable?.setBallVgap(pxBallVgap)
+            mProgressView?.invalidateDrawable(mProgressDrawable!!)
         }
-
-        return self();
+        return self()
     }
 
-    public T setProgressBitmap(Bitmap bitmap) {
-        mProgressDrawable = null;
-        mProgressView.setImageBitmap(bitmap);
-        return self();
+    fun setProgressBitmap(bitmap: Bitmap?): T {
+        mProgressDrawable = null
+        mProgressView?.setImageBitmap(bitmap)
+        return self()
     }
 
-    public T setProgressDrawable(Drawable drawable) {
-        mProgressDrawable = null;
-        mProgressView.setImageDrawable(drawable);
-        return self();
+    fun setProgressDrawable(drawable: Drawable?): T {
+        mProgressDrawable = null
+        mProgressView?.setImageDrawable(drawable)
+        return self()
     }
 
-    public T setProgressResource(@DrawableRes int resId) {
-        mProgressDrawable = null;
-        mProgressView.setImageResource(resId);
-        return self();
+    fun setProgressResource(@DrawableRes resId: Int): T {
+        mProgressDrawable = null
+        mProgressView?.setImageResource(resId)
+        return self()
     }
 
-    public T setDrawableProgressSizeDp(float dpWidth, float dpHeight) {
-        return setDrawableProgressSizePx(SmartUtil.dp2px(dpWidth),  SmartUtil.dp2px(dpHeight));
+    fun setDrawableProgressSizeDp(dpWidth: Float, dpHeight: Float): T {
+        return setDrawableProgressSizePx(SmartUtil.dp2px(dpWidth).toFloat(), SmartUtil.dp2px(dpHeight).toFloat())
     }
 
-    public T setDrawableProgressSizePx(float pxWidth, float pxHeight) {
-        ViewGroup.LayoutParams lpProgressView = mProgressView.getLayoutParams();
-        lpProgressView.width = (int) pxWidth;
-        lpProgressView.height = (int) pxHeight;
-        mProgressView.setLayoutParams(lpProgressView);
-        return self();
+    fun setDrawableProgressSizePx(pxWidth: Float, pxHeight: Float): T {
+        val lpProgressView = mProgressView!!.layoutParams
+        lpProgressView.width = pxWidth.toInt()
+        lpProgressView.height = pxHeight.toInt()
+        mProgressView?.layoutParams = lpProgressView
+        return self()
     }
 
-    public T setTextTitleMarginTopDp(float dpTop) {
-        return setTextTitleMarginTopPx(SmartUtil.dp2px(dpTop));
+    fun setTextTitleMarginTopDp(dpTop: Float): T {
+        return setTextTitleMarginTopPx(SmartUtil.dp2px(dpTop))
     }
 
-    public T setTextTitleMarginTopPx(int pxTop) {
-        MarginLayoutParams lpTitleView = (MarginLayoutParams) mTitleView.getLayoutParams();
-        lpTitleView.topMargin = pxTop;
-        mTitleView.setLayoutParams(lpTitleView);
-        return self();
+    fun setTextTitleMarginTopPx(pxTop: Int): T {
+        val lpTitleView = mTitleView?.layoutParams as MarginLayoutParams
+        lpTitleView.topMargin = pxTop
+        mTitleView?.layoutParams = lpTitleView
+        return self()
     }
 
-    public T setTextTitleSizeSp(float spTextSize) {
-        return setTextTitleSize(TypedValue.COMPLEX_UNIT_SP, spTextSize);
+    fun setTextTitleSizeSp(spTextSize: Float): T {
+        return setTextTitleSize(TypedValue.COMPLEX_UNIT_SP, spTextSize)
     }
 
-    public T setTextTitleSize(int unit, float size) {
-        mTitleView.setTextSize(unit, size);
+    fun setTextTitleSize(unit: Int, size: Float): T {
+        mTitleView?.setTextSize(unit, size)
         if (mRefreshKernel != null) {
-            mRefreshKernel.requestRemeasureHeightFor(this);
+            mRefreshKernel?.requestRemeasureHeightFor(this)
         }
-        return self();
+        return self()
     }
 
-    public T setTextBoldEnable(boolean boldEnable){
-        if (boldEnable){
-            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        }else{
-            mTitleView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+    fun setTextBoldEnable(boldEnable: Boolean): T {
+        if (boldEnable) {
+            mTitleView?.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+        } else {
+            mTitleView?.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         }
         if (mRefreshKernel != null) {
-            mRefreshKernel.requestRemeasureHeightFor(this);
+            mRefreshKernel?.requestRemeasureHeightFor(this)
         }
-        return self();
+        return self()
     }
 
-    public T setTextShowEnable(boolean showEnable) {
-        if (showEnable){
-            mTitleView.setVisibility(View.VISIBLE);
-        }else{
-            mTitleView.setVisibility(View.GONE);
+    fun setTextShowEnable(showEnable: Boolean): T {
+        if (showEnable) {
+            mTitleView?.visibility = VISIBLE
+        } else {
+            mTitleView?.visibility = GONE
         }
         if (mRefreshKernel != null) {
-            mRefreshKernel.requestRemeasureHeightFor(this);
+            mRefreshKernel?.requestRemeasureHeightFor(this)
         }
-        return self();
+        return self()
     }
 
 }
-

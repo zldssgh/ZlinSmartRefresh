@@ -1,39 +1,35 @@
-package com.zlin.smartrefresh.utils;
+package com.zlin.smartrefresh.utils
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
-public class RandomUtils {
+object RandomUtils {
 
-    public static   ArrayList<Integer>  randomNumberGenerator () {
-        ArrayList<Integer> listRandom=new ArrayList<>();
-
-        int n = 3; // 需要生成的不重复随机数的数量
-        int maxNumber = 3; // 随机数的上限
-
-        Random random = new Random();
-        for (int i = 0; i < n; i++) {
-            int randomNumber = random.nextInt(maxNumber);
+    fun randomNumberGenerator(): ArrayList<Int> {
+        val listRandom = ArrayList<Int>()
+        val n = 3 // 需要生成的不重复随机数的数量
+        val maxNumber = 3 // 随机数的上限
+        val random = Random()
+        for (i in 0 until n) {
+            var randomNumber = random.nextInt(maxNumber)
             while (listRandom.contains(randomNumber)) {
-                randomNumber = random.nextInt(maxNumber);
+                randomNumber = random.nextInt(maxNumber)
             }
-            listRandom.add(randomNumber);
+            listRandom.add(randomNumber)
         }
-
-        return listRandom;
+        return listRandom
     }
 
-    public static float randomInt(float sFloat, float eFloat){
-        int min_val = (int) sFloat;
-        int max_val = (int) eFloat;
-//        SecureRandom rand = new SecureRandom();
+    @JvmStatic
+    fun randomInt(sFloat: Float, eFloat: Float): Float {
+        val min_val = sFloat.toInt()
+        val max_val = eFloat.toInt()
+        //        SecureRandom rand = new SecureRandom();
 //        rand.setSeed(new Date().getTime());
 //        int randomNum = rand.nextInt((max_val - min_val) + 1) + min_val;
-
-        ThreadLocalRandom tlr = ThreadLocalRandom.current();
-        int randomNum = tlr.nextInt(min_val, max_val );
-        return randomNum;
+        val tlr = ThreadLocalRandom.current()
+        val randomNum = tlr.nextInt(min_val, max_val)
+        return randomNum.toFloat()
     }
 
 }

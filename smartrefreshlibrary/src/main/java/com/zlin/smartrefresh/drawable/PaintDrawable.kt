@@ -1,82 +1,76 @@
-package com.zlin.smartrefresh.drawable;
+package com.zlin.smartrefresh.drawable
 
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
+import com.zlin.smartrefresh.config.BallInfoConfig
+import com.zlin.smartrefresh.utils.DrawableUtils.getDrawableSize
 
-import com.zlin.smartrefresh.config.BallInfoConfig;
-import com.zlin.smartrefresh.utils.DrawableUtils;
+abstract class PaintDrawable protected constructor() : Drawable() {
 
-public abstract class PaintDrawable extends Drawable {
+    @JvmField
+    protected var mPaint = Paint()
+    @JvmField
+    protected var mCanvasColor = -1
+    protected var ballInfoConfig = BallInfoConfig()
+    @JvmField
+    protected var mBallRadius = 0f
+    @JvmField
+    protected var mBallHgap = 0f
+    protected var mBallVgap = 0f
+    protected var mDrawableWidth = 0f
+    @JvmField
+    protected var mDrawableHeight = 0f
 
-    protected Paint mPaint = new Paint();
-
-    protected int mCanvasColor=-1;
-
-    protected BallInfoConfig ballInfoConfig=new BallInfoConfig();
-
-    protected float mBallRadius =0f;
-    protected float mBallHgap =0f;
-    protected float mBallVgap =0f;
-
-    protected float mDrawableWidth =0f;
-    protected float mDrawableHeight =0f;
-
-    protected PaintDrawable() {
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(0xffaaaaaa);
+    init {
+        mPaint.style = Paint.Style.FILL
+        mPaint.isAntiAlias = true
+        mPaint.color = -0x555556
         //0xff666666
     }
 
-    public void setColor(int color) {
-        mPaint.setColor(color);
+    fun setColor(color: Int) {
+        mPaint.color = color
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
+    override fun setAlpha(alpha: Int) {
+        mPaint.alpha = alpha
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        mPaint.setColorFilter(cf);
+    override fun setColorFilter(cf: ColorFilter?) {
+        mPaint.colorFilter = cf
     }
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSLUCENT;
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
     }
 
-    public void setCanvasColor(int mCanvasColor){
-        this.mCanvasColor=mCanvasColor;
+    fun setCanvasColor(mCanvasColor: Int) {
+        this.mCanvasColor = mCanvasColor
     }
 
-    public void setBallRadius(float ballRadius){
-        this.mBallRadius=ballRadius;
-        updateDrawableSize();
+    fun setBallRadius(ballRadius: Float) {
+        mBallRadius = ballRadius
+        updateDrawableSize()
     }
 
-    public void setBallHgap(float ballHgap){
-        this.mBallHgap=ballHgap;
-        updateDrawableSize();
+    fun setBallHgap(ballHgap: Float) {
+        mBallHgap = ballHgap
+        updateDrawableSize()
     }
 
-    public void setBallVgap(float ballVgap){
-        this.mBallVgap=ballVgap;
-        updateDrawableSize();
+    fun setBallVgap(ballVgap: Float) {
+        mBallVgap = ballVgap
+        updateDrawableSize()
     }
 
-    private void updateDrawableSize(){
-        ballInfoConfig.setBallRadius(mBallRadius);
-        ballInfoConfig.setBallHgap(mBallHgap);
-        ballInfoConfig.setBallVgap(mBallVgap);
-
-        float[] mDrawableSize= DrawableUtils.getDrawableSize(ballInfoConfig);
-
-        mDrawableWidth=mDrawableSize[0];
-        mDrawableHeight=mDrawableSize[1];
+    private fun updateDrawableSize() {
+        ballInfoConfig.ballRadius = mBallRadius
+        ballInfoConfig.ballHgap = mBallHgap
+        ballInfoConfig.ballVgap = mBallVgap
+        val mDrawableSize = getDrawableSize(ballInfoConfig)
+        mDrawableWidth = mDrawableSize[0]
+        mDrawableHeight = mDrawableSize[1]
     }
-
 }
