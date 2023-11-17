@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--专为Android12起步的SplashScreen add by zl 23.11.17-->
+    <style name="Theme.ZlinSmartRefresh" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+
+        <!--需要注意一点，目前使用android:windowSplashScreenBackground设置的颜色不能带透明度，必须为6位或者是8位且透明度为FF，如果使用了带透明度的颜色将不生效-->
+        <!--整体背景色-->
+        <item name="android:windowSplashScreenBackground">@color/splash_screen_background</item>
+
+        <!--中心图标-->
+<!--        <item name="android:windowSplashScreenAnimatedIcon">@drawable/cat</item>-->
+
+        <!--动画时长 使用android:windowSplashScreenAnimationDuration可以设置启动动画时长，但是最长只能设置1000毫秒。-->
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+
+        <!--测试无效-->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash_screen_icon_background_color</item>
+
+        <!--底部品牌图片-->
+        <item name="android:windowSplashScreenBrandingImage">@color/splash_screen_branding_image</item>
+    </style>
+
+</resources>

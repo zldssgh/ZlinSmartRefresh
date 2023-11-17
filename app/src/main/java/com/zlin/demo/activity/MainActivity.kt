@@ -1,13 +1,19 @@
 package com.zlin.demo.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
@@ -17,6 +23,8 @@ import com.zlin.demo.R
 import com.zlin.demo.adapter.SmartRefreshAdapter
 import com.zlin.demo.enumt.SmartRefreshLayoutItem
 import com.zlin.smartrefresh.api.header.ThreeBallHeader
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,12 +39,52 @@ class MainActivity : AppCompatActivity() {
 
     private var isFirstEnter = true
 
+    private var isAppReady = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //延缓启动画面的时长
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                if (isAppReady) {
+                    content.viewTreeObserver.removeOnPreDrawListener(this)
+                }
+                return isAppReady
+            }
+        })
+        delayBootTime()
+
+        onExitAnimation()
+
         onInitHandler()
         onEventListenerHandler()
+    }
+
+    private fun delayBootTime() {
+        lifecycleScope.launch {
+            delay(1000)
+            isAppReady = true
+        }
+    }
+
+    private fun onExitAnimation(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { splashScreenView ->
+                val slideUp = ObjectAnimator.ofFloat(splashScreenView, View.TRANSLATION_Y, 0f, -splashScreenView.height.toFloat())
+                slideUp.duration = 2000
+                // 在自定义动画结束时调用splashScreenView.remove()
+                slideUp.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                        splashScreenView.remove()
+                    }
+                })
+                slideUp.start()
+            }
+        }
     }
 
     private fun onInitHandler(){

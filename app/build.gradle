@@ -58,6 +58,9 @@ dependencies {
     //adapter适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.2'
 
+    //在Android 12以下版本没有SplashScreen启动动画，显示的空白背景页面，这在用户体验上很不好。因此，Google在AndroidX中提供了一个向下兼容的SplashScreen库。
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+
     //自定义刷新头
     implementation project(path: ':smartrefreshlibrary')
 }

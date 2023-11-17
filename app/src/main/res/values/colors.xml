@@ -19,4 +19,10 @@
     <color name="demo_primary_color">#615E5E</color>
     <color name="demo_accent_color">#FFFFFFFF</color>
     <color name="demo_canvas_color">#459EC6</color>
+
+
+    <!--Android12启动画面背景色-->
+    <color name="splash_screen_background">#CDDC39</color>
+    <color name="splash_screen_icon_background_color">#4CAF50</color>
+    <color name="splash_screen_branding_image">#C309E3</color>
 </resources>
