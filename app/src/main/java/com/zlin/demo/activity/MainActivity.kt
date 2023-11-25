@@ -7,11 +7,13 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +25,7 @@ import com.zlin.demo.R
 import com.zlin.demo.adapter.SmartRefreshAdapter
 import com.zlin.demo.enumt.SmartRefreshLayoutItem
 import com.zlin.smartrefresh.api.header.ThreeBallHeader
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -39,26 +42,35 @@ class MainActivity : AppCompatActivity() {
 
     private var isFirstEnter = true
 
+    private var isKeepOnScreenCondition=true
+
     private var isAppReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen=installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //延缓启动画面的时长
-        val content: View = findViewById(android.R.id.content)
-        content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (isAppReady) {
-                    content.viewTreeObserver.removeOnPreDrawListener(this)
-                }
-                return isAppReady
-            }
-        })
+        //一、使用SplashScreen的方法
+        splashScreen.setKeepOnScreenCondition {
+            Log.i("zhenglin","${isAppReady} KeepOnScreenCondition...")
+            isKeepOnScreenCondition
+        }
+
+        //二、延缓启动画面的时长
+//        val content: View = findViewById(android.R.id.content)
+//        content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+//            override fun onPreDraw(): Boolean {
+//                if (isAppReady) {
+//                    content.viewTreeObserver.removeOnPreDrawListener(this)
+//                }
+//                return isAppReady
+//            }
+//        })
         delayBootTime()
 
-        onExitAnimation()
+        //离开时动画
+        //onExitAnimation()
 
         onInitHandler()
         onEventListenerHandler()
@@ -66,8 +78,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun delayBootTime() {
         lifecycleScope.launch {
-            delay(1000)
+            delay(10000)
+            isKeepOnScreenCondition=false
             isAppReady = true
+
+            launch(Dispatchers.Main){
+            }
         }
     }
 
@@ -190,6 +206,7 @@ class MainActivity : AppCompatActivity() {
                 SmartRefreshLayoutItem.橙色主题->{
                     setThemeColor(android.R.color.holo_orange_light, android.R.color.holo_orange_dark)
                 }
+                else->{}
             }
 
             //自动刷新

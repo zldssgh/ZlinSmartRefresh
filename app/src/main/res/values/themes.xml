@@ -14,13 +14,31 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="android:windowNoTitle">true</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimary</item>-->
+<!--        <item name="android:windowBackground">@drawable/img_splash</item>-->
+
     </style>
 
-    <!--统一使用这个主题，则从Android12起步的SplashScreen就能统一风格 add by zl 23.11.17-->
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/cat</item>
+        <!--基本配置 这个一定要配置，否则低版本启动画面不是预想的 add by zl 23.11.25-->
+        <item name="android:windowBackground">@mipmap/img_splash_screen</item>
+
+        <!--SplashScreen配置-->
+        <!--「启动画面」窗口背景-->
+        <item name="windowSplashScreenBackground">@color/color_splash_screen_background_normal</item>
+
+        <!--中心区域的背景色以及图标-->
+        <!--「启动画面」中心图标后面设置背景-->
+        <item name="windowSplashScreenIconBackgroundColor">@color/color_splash_screen_icon_background_color</item>
+        <!--「启动画面」中心的图标-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/shape_transparent</item>
+        <!--「启动画面」中心图标动画的持续时间-->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+
+        <!-- 必须 -->
         <item name="postSplashScreenTheme">@style/Theme.ZlinSmartRefresh</item>
     </style>
-
 </resources>

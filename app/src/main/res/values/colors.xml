@@ -13,6 +13,8 @@
     <color name="colorPrimaryOverlay">#cc0094ff</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="colorTrans">#00000000</color>
+
     <color name="item_describe_color">#888888</color>
 
 
@@ -22,7 +24,14 @@
 
 
     <!--Android12启动画面背景色-->
-    <color name="splash_screen_background">#CDDC39</color>
-    <color name="splash_screen_icon_background_color">#4CAF50</color>
-    <color name="splash_screen_branding_image">#C309E3</color>
+    <!--整体背景-->
+    <color name="color_splash_screen_background_v31">#FFFFFF</color>
+    <color name="color_splash_screen_background_normal">#868584</color>
+
+    <!--中心区域-->
+    <color name="color_splash_screen_icon_background_color">#00000000</color>
+    <color name="color_splash_screen_animated_icon">#00000000</color>
+
+    <!--底部品牌-->
+    <color name="color_splash_screen_branding_image">#C309E3</color>
 </resources>
