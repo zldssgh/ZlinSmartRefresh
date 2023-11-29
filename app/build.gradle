@@ -62,5 +62,7 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0'
 
     //自定义刷新头
-    implementation project(path: ':smartrefreshlibrary')
+    //implementation project(path: ':smartrefreshlibrary')
+
+    implementation 'com.github.zldssgh:ZlinSmartRefresh:1.0.1'
 }
