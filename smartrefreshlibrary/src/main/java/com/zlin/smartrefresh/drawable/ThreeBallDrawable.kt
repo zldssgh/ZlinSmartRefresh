@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit
 class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
     private val TAG = "ThreeBallDrawable"
 
-    protected var mProgressDegree = 0
+    private var mProgressDegree = 0
     private var mValueAnimator: ValueAnimator? = null
-    protected var mPath = Path()
+    private var mPath = Path()
     private var scheduledExecutorService: ScheduledExecutorService? = null
     private var scheduledFuture: ScheduledFuture<*>? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -94,11 +94,13 @@ class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
             }
         } else {
             log("Animation5", "打开动画1111111111111111111111111111111111111111111")
+
             if (scheduledExecutorService == null) {
                 scheduledExecutorService = Executors.newScheduledThreadPool(1)
             }
-            scheduledFuture = scheduledExecutorService!!.scheduleWithFixedDelay({
+            scheduledFuture = scheduledExecutorService?.scheduleWithFixedDelay({
                 log("Animation4", "执行55555555555555555555555555555555555555555555555555555555555")
+
                 handler.post { invalidateSelf() }
             }, 0, 200, TimeUnit.MILLISECONDS)
         }
@@ -114,17 +116,16 @@ class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
             }
         } else {
             log("Animation5", "关闭动画2222222222222222222222222222222222222")
+
             try {
                 if (scheduledFuture != null && scheduledFuture?.isCancelled==false) {
                     log("Animation4", "执行001")
-                    scheduledFuture!!.cancel(true)
+                    scheduledFuture?.cancel(true)
                     log("Animation4", "执行002")
-                    scheduledFuture = null
-                    log("Animation4", "执行003")
                 }
                 if (scheduledExecutorService != null && scheduledExecutorService?.isShutdown==false) {
                     log("Animation4", "执行201")
-                    scheduledExecutorService!!.shutdownNow()
+                    scheduledExecutorService?.shutdownNow()
                     log("Animation4", "执行202")
                 }
                 log("Animation4", "执行301")
@@ -132,6 +133,7 @@ class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
                 e.printStackTrace()
                 log("Animation4", "错误:" + e.message)
             } finally {
+                scheduledFuture = null
                 scheduledExecutorService = null
             }
         }
@@ -141,18 +143,8 @@ class ThreeBallDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
         return if (isOld) {
             mValueAnimator?.isRunning==true
         } else {
-            scheduledFuture != null && scheduledFuture?.isCancelled==true
+            scheduledFuture != null && scheduledFuture?.isCancelled==false
         }
     }
 
-    fun closeTask() {
-        try {
-            stop()
-            if (scheduledExecutorService != null && scheduledExecutorService?.isShutdown==false) {
-                scheduledExecutorService?.shutdownNow()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 }

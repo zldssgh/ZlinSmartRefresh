@@ -24,6 +24,7 @@ import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import com.zlin.demo.R
 import com.zlin.demo.adapter.SmartRefreshAdapter
 import com.zlin.demo.enumt.SmartRefreshLayoutItem
+import com.zlin.demo.smartRefreshLayout.setThreeBallHeader
 import com.zlin.smartrefresh.api.header.ThreeBallHeader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun delayBootTime() {
         lifecycleScope.launch {
-            delay(10000)
+            delay(500)
             isKeepOnScreenCondition=false
             isAppReady = true
 
@@ -104,8 +105,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onInitHandler(){
+        //获取控件
         smartRefreshLayout=findViewById<SmartRefreshLayout>(R.id.smartRefreshLayout)
         rv_smart_refresh=findViewById<RecyclerView>(R.id.rv_smart_refresh)
+
+        //是否使用自定义刷新头
+        val isUserCustomRefreshHeader=true
+        if (isUserCustomRefreshHeader){
+            smartRefreshLayout?.setThreeBallHeader(this)
+        }
 
         //获取ThreeBallHeader
         threeBallHeader=smartRefreshLayout?.refreshHeader as? ThreeBallHeader

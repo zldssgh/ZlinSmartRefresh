@@ -25,7 +25,6 @@ import com.scwang.smart.refresh.layout.simple.SimpleComponent
 import com.scwang.smart.refresh.layout.util.SmartUtil
 import com.zlin.smartrefresh.R
 import com.zlin.smartrefresh.drawable.PaintDrawable
-import com.zlin.smartrefresh.drawable.ThreeBallDrawable
 import com.zlin.smartrefresh.utils.SelfLogUtils.log
 
 abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : SimpleComponent(context, attrs, defStyleAttr), RefreshComponent {
@@ -34,12 +33,15 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     protected var mProgressView: ImageView? = null
     @JvmField
     protected var mTitleView: TextView? = null
+
     protected var mRefreshKernel: RefreshKernel? = null
+
     @JvmField
     protected var mProgressDrawable: PaintDrawable? = null
     protected var mSetPrimaryColor = false
     protected var mSetAccentColor = false
     protected var mPrimaryColor = 0
+
     @JvmField
     protected var mFinishDuration = 500
     protected var mPaddingTop = 0
@@ -90,12 +92,14 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        log("Animation5", "onDetachedFromWindow....")
+
         val progressView: View? = mProgressView
         progressView?.animate()?.cancel()
         val drawable = mProgressView?.drawable
-        if (drawable is ThreeBallDrawable) {
+        if (drawable is Animatable) {
             if (drawable.isRunning) {
-                drawable.closeTask()
+                (drawable as Animatable).stop()
             }
         }
     }
@@ -106,16 +110,23 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     override fun onStartAnimator(refreshLayout: RefreshLayout, height: Int, maxDragHeight: Int) {
-        val progressView: View? = mProgressView
-        progressView?.visibility = VISIBLE
-        val drawable = mProgressView?.drawable
-        if (drawable is Animatable) {
-            val animatable = drawable as Animatable
-            if (!animatable.isRunning) {
-                (drawable as Animatable).start()
+        log("Animation5", "onStartAnimator(${height}/${maxDragHeight})....")
+
+        if (height==0 && maxDragHeight==0){
+            val progressView: View? = mProgressView
+            progressView?.visibility = VISIBLE
+            val drawable = mProgressView?.drawable
+            if (drawable is Animatable) {
+                val animatable = drawable as Animatable
+                if (!animatable.isRunning) {
+                    log("Animation5", "onStartAnimator 有效执行")
+                    (drawable as Animatable).start()
+                }
+            } else {
+                //progressView.animate().rotation(36000).setDuration(100000);
             }
-        } else {
-            //progressView.animate().rotation(36000).setDuration(100000);
+        }else{
+            log("Animation5", "onStartAnimator 空的执行")
         }
     }
 
@@ -128,7 +139,7 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     override fun onReleased(refreshLayout: RefreshLayout, height: Int, maxDragHeight: Int) {
-        //onStartAnimator(refreshLayout, height, maxDragHeight);
+
     }
 
     override fun onFinish(refreshLayout: RefreshLayout, success: Boolean): Int {
@@ -155,11 +166,14 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
      * 停止动画
      */
     private fun onStopAnimator() {
+        log("Animation5", "onStopAnimator....")
+
         val progressView: View? = mProgressView
         val drawable = mProgressView?.drawable
         if (drawable is Animatable) {
             val animatable = drawable as Animatable
             if (animatable.isRunning) {
+                log("Animation5", "onStopAnimator 有效执行")
                 animatable.stop()
             }
         } else {

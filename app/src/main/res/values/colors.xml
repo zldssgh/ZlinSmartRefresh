@@ -22,6 +22,11 @@
     <color name="demo_accent_color">#FFFFFFFF</color>
     <color name="demo_canvas_color">#459EC6</color>
 
+    <color name="colorTransparent">#00000000</color>
+
+    <!--SmartRefreshLayout相关颜色-->
+    <color name="srlcolor_ABAAADBD">#ABAAADBD</color>
+
 
     <!--Android12启动画面背景色-->
     <!--整体背景-->
