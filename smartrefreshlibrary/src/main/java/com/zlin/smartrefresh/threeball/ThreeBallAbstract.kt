@@ -24,7 +24,9 @@ import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import com.scwang.smart.refresh.layout.simple.SimpleComponent
 import com.scwang.smart.refresh.layout.util.SmartUtil
 import com.zlin.smartrefresh.R
+import com.zlin.smartrefresh.config.BallInfoConfig
 import com.zlin.smartrefresh.drawable.PaintDrawable
+import com.zlin.smartrefresh.utils.DrawableUtils
 import com.zlin.smartrefresh.utils.SelfLogUtils.log
 
 abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : SimpleComponent(context, attrs, defStyleAttr), RefreshComponent {
@@ -47,6 +49,8 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     protected var mPaddingTop = 0
     protected var mPaddingBottom = 0
     protected var mMinHeightOfContent = 0
+
+    protected val ballInfoConfig = BallInfoConfig()
 
     init {
         mSpinnerStyle = SpinnerStyle.Translate
@@ -187,6 +191,16 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
         log("onSizeChanged", "w/h=$w/$h   oldw/oldh=$oldw/$oldh")
     }
 
+    fun updateBallInfoConfigAndProgressSize() {
+        //计算DrawableSize
+        val mDrawableSize = DrawableUtils.getDrawableSize(ballInfoConfig)
+        ballInfoConfig.drawableWidth=mDrawableSize[0]
+        ballInfoConfig.drawableHeight=mDrawableSize[1]
+
+        //设置ProgressSize
+        setDrawableProgressSizePx(ballInfoConfig.drawableWidth, ballInfoConfig.drawableHeight)
+    }
+
     private fun self(): T {
         return this as T
     }
@@ -222,26 +236,24 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     fun setPrimaryColor(@ColorInt primaryColor: Int): T {
         mSetPrimaryColor = true
         mPrimaryColor = primaryColor
-        if (mRefreshKernel != null) {
-            mRefreshKernel?.requestDrawBackgroundFor(this, primaryColor)
-        }
+        mRefreshKernel?.requestDrawBackgroundFor(this, primaryColor)
         return self()
     }
 
     fun setAccentColor(@ColorInt accentColor: Int): T {
         mSetAccentColor = true
         mTitleView?.setTextColor(accentColor)
-        if (mProgressDrawable != null) {
+        mProgressDrawable?.let {
             mProgressDrawable?.setColor(accentColor)
-            mProgressView?.invalidateDrawable(mProgressDrawable!!)
+            mProgressView?.invalidateDrawable(it)
         }
         return self()
     }
 
     fun setCanvasColor(@ColorInt canvasColor: Int): T {
-        if (mProgressDrawable != null) {
+        mProgressDrawable?.let {
             mProgressDrawable?.setCanvasColor(canvasColor)
-            mProgressView?.invalidateDrawable(mProgressDrawable!!)
+            mProgressView?.invalidateDrawable(it)
         }
         return self()
     }
@@ -251,9 +263,13 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     fun setBallRadiusPx(pxBallRadius: Float): T {
-        if (mProgressDrawable != null) {
-            mProgressDrawable?.setBallRadius(pxBallRadius)
-            mProgressView?.invalidateDrawable(mProgressDrawable!!)
+        mProgressDrawable?.let {
+            ballInfoConfig.ballRadius=pxBallRadius
+
+            updateBallInfoConfigAndProgressSize()
+
+            it?.updateBallInfoConfig(ballInfoConfig)
+            mProgressView?.invalidateDrawable(it)
         }
         return self()
     }
@@ -263,9 +279,13 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     fun setBallHgapPx(pxBallHgap: Float): T {
-        if (mProgressDrawable != null) {
-            mProgressDrawable?.setBallHgap(pxBallHgap)
-            mProgressView?.invalidateDrawable(mProgressDrawable!!)
+        mProgressDrawable?.let{
+            ballInfoConfig.ballHgap=pxBallHgap
+
+            updateBallInfoConfigAndProgressSize()
+
+            it?.updateBallInfoConfig(ballInfoConfig)
+            mProgressView?.invalidateDrawable(it)
         }
         return self()
     }
@@ -275,9 +295,13 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     fun setBallVgapPx(pxBallVgap: Float): T {
-        if (mProgressDrawable != null) {
-            mProgressDrawable?.setBallVgap(pxBallVgap)
-            mProgressView?.invalidateDrawable(mProgressDrawable!!)
+        mProgressDrawable?.let{
+            ballInfoConfig.ballVgap=pxBallVgap
+
+            updateBallInfoConfigAndProgressSize()
+
+            it?.updateBallInfoConfig(ballInfoConfig)
+            mProgressView?.invalidateDrawable(it)
         }
         return self()
     }
@@ -305,10 +329,12 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
     }
 
     fun setDrawableProgressSizePx(pxWidth: Float, pxHeight: Float): T {
-        val lpProgressView = mProgressView!!.layoutParams
-        lpProgressView.width = pxWidth.toInt()
-        lpProgressView.height = pxHeight.toInt()
-        mProgressView?.layoutParams = lpProgressView
+        mProgressView?.let {
+            val lpProgressView = it.layoutParams
+            lpProgressView.width = pxWidth.toInt()
+            lpProgressView.height = pxHeight.toInt()
+            it.layoutParams = lpProgressView
+        }
         return self()
     }
 
@@ -329,9 +355,7 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
 
     fun setTextTitleSize(unit: Int, size: Float): T {
         mTitleView?.setTextSize(unit, size)
-        if (mRefreshKernel != null) {
-            mRefreshKernel?.requestRemeasureHeightFor(this)
-        }
+        mRefreshKernel?.requestRemeasureHeightFor(this)
         return self()
     }
 
@@ -341,9 +365,7 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
         } else {
             mTitleView?.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         }
-        if (mRefreshKernel != null) {
-            mRefreshKernel?.requestRemeasureHeightFor(this)
-        }
+        mRefreshKernel?.requestRemeasureHeightFor(this)
         return self()
     }
 
@@ -353,9 +375,7 @@ abstract class ThreeBallAbstract<T: ThreeBallAbstract<T>>(context: Context?, att
         } else {
             mTitleView?.visibility = GONE
         }
-        if (mRefreshKernel != null) {
-            mRefreshKernel?.requestRemeasureHeightFor(this)
-        }
+        mRefreshKernel?.requestRemeasureHeightFor(this)
         return self()
     }
 

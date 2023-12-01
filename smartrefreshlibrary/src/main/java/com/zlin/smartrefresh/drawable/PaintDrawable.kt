@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import com.zlin.smartrefresh.config.BallInfoConfig
-import com.zlin.smartrefresh.utils.DrawableUtils.getDrawableSize
 
 abstract class PaintDrawable protected constructor() : Drawable() {
 
@@ -13,7 +12,7 @@ abstract class PaintDrawable protected constructor() : Drawable() {
     protected var mPaint = Paint()
     @JvmField
     protected var mCanvasColor = -1
-    protected var ballInfoConfig = BallInfoConfig()
+
     @JvmField
     protected var mBallRadius = 0f
     @JvmField
@@ -50,27 +49,12 @@ abstract class PaintDrawable protected constructor() : Drawable() {
         this.mCanvasColor = mCanvasColor
     }
 
-    fun setBallRadius(ballRadius: Float) {
-        mBallRadius = ballRadius
-        updateDrawableSize()
+    open fun updateBallInfoConfig(ballInfoConfig: BallInfoConfig) {
+        mBallRadius = ballInfoConfig.ballRadius
+        mBallHgap = ballInfoConfig.ballHgap
+        mBallVgap = ballInfoConfig.ballVgap
+        mDrawableWidth = ballInfoConfig.drawableWidth
+        mDrawableHeight = ballInfoConfig.drawableHeight
     }
 
-    fun setBallHgap(ballHgap: Float) {
-        mBallHgap = ballHgap
-        updateDrawableSize()
-    }
-
-    fun setBallVgap(ballVgap: Float) {
-        mBallVgap = ballVgap
-        updateDrawableSize()
-    }
-
-    private fun updateDrawableSize() {
-        ballInfoConfig.ballRadius = mBallRadius
-        ballInfoConfig.ballHgap = mBallHgap
-        ballInfoConfig.ballVgap = mBallVgap
-        val mDrawableSize = getDrawableSize(ballInfoConfig)
-        mDrawableWidth = mDrawableSize[0]
-        mDrawableHeight = mDrawableSize[1]
-    }
 }

@@ -12,10 +12,8 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import com.zlin.smartrefresh.R
-import com.zlin.smartrefresh.config.BallInfoConfig
 import com.zlin.smartrefresh.drawable.ThreeBallDrawable
 import com.zlin.smartrefresh.threeball.ThreeBallAbstract
-import com.zlin.smartrefresh.utils.DrawableUtils.getDrawableSize
 import com.zlin.smartrefresh.utils.SelfLogUtils.log
 
 class ThreeBallHeader @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ThreeBallAbstract<ThreeBallHeader>(context, attrs, 0), RefreshHeader {
@@ -26,17 +24,18 @@ class ThreeBallHeader @JvmOverloads constructor(context: Context, attrs: Attribu
     //    public static String REFRESH_HEADER_FINISH = null;//"刷新完成";
     //    public static String REFRESH_HEADER_FAILED = null;//"刷新失败";
     
-    protected var mTextPulling: String? = null //"下拉可以刷新";
-    protected var mTextRelease: String? = null //"释放立即刷新";
-    protected var mTextRefreshing: String? = null //"正在刷新...";
-    protected var mTextFinish: String? = null //"刷新完成";
-    protected var mTextFailed: String? = null //"刷新失败";
-            
-    protected var mTitleBoldEnable = false //标题粗体使能
-    protected var mTitleShowEnable = true //标题显示使能
-    protected var mBallRadius = 0f //球体半径
-    protected var mBallHgap = 0f //球体水平间距
-    protected var mBallVgap = 0f //球体垂直间距
+    private var mTextPulling: String? = null //"下拉可以刷新";
+    private var mTextRelease: String? = null //"释放立即刷新";
+    private var mTextRefreshing: String? = null //"正在刷新...";
+    private var mTextFinish: String? = null //"刷新完成";
+    private var mTextFailed: String? = null //"刷新失败";
+
+//    private var mBallRadius = 0f //球体半径
+//    private var mBallHgap = 0f //球体水平间距
+//    private var mBallVgap = 0f //球体垂直间距
+
+    private var mTitleBoldEnable = false //标题粗体使能
+    private var mTitleShowEnable = true //标题显示使能
 
     init {
         //加载布局
@@ -46,31 +45,28 @@ class ThreeBallHeader @JvmOverloads constructor(context: Context, attrs: Attribu
         val thisView: View = this
         mProgressView = thisView.findViewById(R.id.srl_tball_progress)
         mTitleView = thisView.findViewById(R.id.srl_tball_title)
-        
+
+        //获取TypedArray
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ThreeBallHeader)
-        
-        mProgressDrawable = ThreeBallDrawable()
-        mProgressView?.setImageDrawable(mProgressDrawable)
-        mBallRadius = ta.getDimension(R.styleable.ThreeBallHeader_tballBallRadius, resources.getDimensionPixelSize(R.dimen.tball_ball_radius).toFloat())
-        mBallHgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallHgap, resources.getDimensionPixelSize(R.dimen.tball_ball_hgap).toFloat())
-        mBallVgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallVgap, resources.getDimensionPixelSize(R.dimen.tball_ball_vgap).toFloat())
-        
-        super.setBallRadiusPx(mBallRadius)
-        super.setBallHgapPx(mBallHgap)
-        super.setBallVgapPx(mBallVgap)
-        
-        val ballInfoConfig = BallInfoConfig()
+
+        //获取BallInfoConfig的参数
+        val mBallRadius = ta.getDimension(R.styleable.ThreeBallHeader_tballBallRadius, resources.getDimensionPixelSize(R.dimen.tball_ball_radius).toFloat())
+        val mBallHgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallHgap, resources.getDimensionPixelSize(R.dimen.tball_ball_hgap).toFloat())
+        val mBallVgap = ta.getDimension(R.styleable.ThreeBallHeader_tballBallVgap, resources.getDimensionPixelSize(R.dimen.tball_ball_vgap).toFloat())
+
+        //配置BallInfoConfig
         ballInfoConfig.ballRadius = mBallRadius
         ballInfoConfig.ballHgap = mBallHgap
         ballInfoConfig.ballVgap = mBallVgap
-        
-        val mDrawableSize = getDrawableSize(ballInfoConfig)
-        
-        val lpProgressView = mProgressView?.layoutParams
-        lpProgressView?.width = mDrawableSize[0].toInt()
-        lpProgressView?.height = mDrawableSize[1].toInt()
-        mProgressView?.layoutParams = lpProgressView
-        
+
+        //设置mProgressView大小
+        super.updateBallInfoConfigAndProgressSize()
+
+        //创建ThreeBallDrawable
+        mProgressDrawable = ThreeBallDrawable()
+        mProgressDrawable?.updateBallInfoConfig(ballInfoConfig)
+        mProgressView?.setImageDrawable(mProgressDrawable)
+
         val titleMarginTop = ta.getDimension(R.styleable.ThreeBallHeader_tballTitleMarginTop, resources.getDimension(R.dimen.tball_title_margintop))
         val lpTitleView = mTitleView?.layoutParams as MarginLayoutParams
         lpTitleView.topMargin = titleMarginTop.toInt()
